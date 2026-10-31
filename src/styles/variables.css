@@ -1,0 +1,30 @@
+:root {
+  /* Primary Blue Shades */
+  --color-primary: #102A56;
+  --color-secondary: #2563EB;
+  --color-accent: #3B82F6;
+  --color-highlight: #60A5FA;
+
+  /* Backgrounds */
+  --color-background: #EFF6FF;
+  --color-surface: #FFFFFF;
+  --color-light-blue: #DBEAFE;
+
+  /* Text */
+  --color-text: #172554;
+  --color-muted: #64748B;
+
+  /* Borders */
+  --color-border: #DBEAFE;
+
+  /* Layout */
+  --sidebar-width: 260px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgba(37, 99, 235, 0.06);
+}
