@@ -17,6 +17,13 @@ import {
   MessageCircle,
   Send,
   CheckCircle2,
+  ClipboardCheck,
+  Award,
+  Megaphone,
+  BellRing,
+  PartyPopper,
+  AlertTriangle,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -29,6 +36,8 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const [enrollmentItems, setEnrollmentItems] = useState([]);
+  const [assessmentResults, setAssessmentResults] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
@@ -39,9 +48,12 @@ export default function StudentDashboard() {
   const [messageSuccess, setMessageSuccess] = useState("");
   const [messageError, setMessageError] = useState("");
 
+  // FETCH DASHBOARD DATA
   const fetchDashboardData = useCallback(async () => {
     if (!user?.id) {
       setEnrollmentItems([]);
+      setAssessmentResults([]);
+      setAnnouncements([]);
       setLoading(false);
       return;
     }
@@ -50,10 +62,13 @@ export default function StudentDashboard() {
     setError("");
 
     try {
+      // ENROLLMENT ITEMS
       const { data, error } = await supabase
         .from("enrollment_items")
         .select(`
           id,
+          course_id,
+          batch_id,
           course_title_snapshot,
           price_snapshot,
           progress_percentage,
@@ -95,9 +110,50 @@ export default function StudentDashboard() {
       if (error) throw error;
 
       setEnrollmentItems(data || []);
+
+      // STUDENT ASSESSMENT RESULTS
+      try {
+        const {
+          data: resultsData,
+          error: resultsError,
+        } = await supabase
+          .from("student_assessment_results")
+          .select(`
+            id,
+            assessment_name,
+            assessment_type,
+            assessment_date,
+            marks_obtained,
+            maximum_marks,
+            passing_marks,
+            feedback,
+            evaluator_name,
+            percentage,
+            created_at
+          `)
+          .eq("student_id", user.id)
+          .order("assessment_date", { ascending: false });
+
+        if (resultsError) throw resultsError;
+
+        setAssessmentResults(
+          (resultsData || []).map((result) => ({
+            ...result,
+            evaluator_name: result.evaluator_name || "Academy Team",
+          }))
+        );
+      } catch (assessmentError) {
+        console.error(
+          "Assessment results loading error:",
+          assessmentError
+        );
+        setAssessmentResults([]);
+      }
     } catch (err) {
       console.error("Student dashboard loading error:", err);
-      setError(err.message || "Unable to load your dashboard information.");
+      setError(
+        err.message || "Unable to load your dashboard information."
+      );
     } finally {
       setLoading(false);
     }
@@ -106,6 +162,97 @@ export default function StudentDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
+
+  // FETCH APPROVED ANNOUNCEMENTS FOR THIS STUDENT
+  const fetchAnnouncements = useCallback(async () => {
+    if (!user?.id) {
+      setAnnouncements([]);
+      return;
+    }
+
+    try {
+      const now = new Date().toISOString();
+
+      const { data, error } = await supabase
+        .from("academy_announcements")
+        .select(`
+          id,
+          title,
+          message,
+          category,
+          audience_type,
+          audience_batch_id,
+          audience_course_id,
+          event_date,
+          event_time,
+          expires_at,
+          created_at
+        `)
+        .eq("status", "approved")
+        .gt("expires_at", now)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      const enrolledBatchIds = new Set(
+        enrollmentItems.map((item) => item.batch_id).filter(Boolean)
+      );
+
+      const enrolledCourseIds = new Set(
+        enrollmentItems.map((item) => item.course_id).filter(Boolean)
+      );
+
+      const visibleAnnouncements = (data || []).filter((item) => {
+        if (item.audience_type === "all") return true;
+
+        if (item.audience_type === "batch") {
+          return enrolledBatchIds.has(item.audience_batch_id);
+        }
+
+        if (item.audience_type === "course") {
+          return enrolledCourseIds.has(item.audience_course_id);
+        }
+
+        return false;
+      });
+
+      setAnnouncements(visibleAnnouncements);
+    } catch (announcementError) {
+      console.error("Announcement loading error:", announcementError);
+      setAnnouncements([]);
+    }
+  }, [user?.id, enrollmentItems]);
+
+  // REFRESH ANNOUNCEMENTS WHEN ENROLLMENTS ARE AVAILABLE
+  useEffect(() => {
+    if (user?.id) {
+      fetchAnnouncements();
+    }
+  }, [fetchAnnouncements, user?.id]);
+
+  // REALTIME ANNOUNCEMENT UPDATES
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const channel = supabase
+      .channel(`student-announcements-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "academy_announcements",
+        },
+        () => {
+          fetchAnnouncements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, fetchAnnouncements]);
 
   // SUBMIT STUDENT MESSAGE
   const handleSendMessage = async (event) => {
@@ -174,12 +321,14 @@ export default function StudentDashboard() {
 
   // PAYMENT CALCULATIONS
   const totalFee = enrollmentRecords.reduce(
-    (sum, enrollment) => sum + Number(enrollment.total_fee || 0),
+    (sum, enrollment) =>
+      sum + Number(enrollment.total_fee || 0),
     0
   );
 
   const totalPaid = enrollmentRecords.reduce(
-    (sum, enrollment) => sum + Number(enrollment.amount_paid || 0),
+    (sum, enrollment) =>
+      sum + Number(enrollment.amount_paid || 0),
     0
   );
 
@@ -189,7 +338,8 @@ export default function StudentDashboard() {
   const overallProgress = enrollmentItems.length
     ? Math.round(
         enrollmentItems.reduce(
-          (sum, item) => sum + Number(item.progress_percentage || 0),
+          (sum, item) =>
+            sum + Number(item.progress_percentage || 0),
           0
         ) / enrollmentItems.length
       )
@@ -232,6 +382,56 @@ export default function StudentDashboard() {
       .slice(0, 5);
   }, [enrollmentItems]);
 
+  // ASSESSMENT PERFORMANCE SUMMARY
+  const assessmentSummary = useMemo(() => {
+    if (!assessmentResults.length) {
+      return {
+        total: 0,
+        average: 0,
+        best: 0,
+        passRate: 0,
+        gradedCount: 0,
+        passedCount: 0,
+      };
+    }
+
+    const percentages = assessmentResults.map((result) => {
+      const maximum = Number(result.maximum_marks || 0);
+      const obtained = Number(result.marks_obtained || 0);
+
+      return maximum > 0
+        ? (obtained / maximum) * 100
+        : 0;
+    });
+
+    const gradedResults = assessmentResults.filter(
+      (result) =>
+        result.passing_marks !== null &&
+        result.passing_marks !== undefined &&
+        result.passing_marks !== ""
+    );
+
+    const passedCount = gradedResults.filter(
+      (result) =>
+        Number(result.marks_obtained) >=
+        Number(result.passing_marks)
+    ).length;
+
+    return {
+      total: assessmentResults.length,
+      average:
+        percentages.reduce((sum, value) => sum + value, 0) /
+        percentages.length,
+      best: Math.max(...percentages),
+      passRate: gradedResults.length
+        ? (passedCount / gradedResults.length) * 100
+        : 0,
+      gradedCount: gradedResults.length,
+      passedCount,
+    };
+  }, [assessmentResults]);
+
+  // FORMATTING HELPERS
   const formatCurrency = (amount) =>
     `₹${Number(amount || 0).toLocaleString("en-IN")}`;
 
@@ -240,7 +440,9 @@ export default function StudentDashboard() {
 
     const parsed = new Date(date);
 
-    if (Number.isNaN(parsed.getTime())) return "Not scheduled";
+    if (Number.isNaN(parsed.getTime())) {
+      return "Not scheduled";
+    }
 
     return parsed.toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -254,7 +456,9 @@ export default function StudentDashboard() {
 
     const parsed = new Date(date);
 
-    if (Number.isNaN(parsed.getTime())) return "Not updated";
+    if (Number.isNaN(parsed.getTime())) {
+      return "Not updated";
+    }
 
     return parsed.toLocaleString("en-IN", {
       day: "2-digit",
@@ -296,6 +500,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="student-dashboard">
+
       {/* TOP NAVIGATION */}
       <header className="student-topbar">
         <div className="student-brand">
@@ -331,6 +536,66 @@ export default function StudentDashboard() {
       </header>
 
       <main className="student-dashboard-main">
+
+        {/* ACADEMY ANNOUNCEMENT TICKER */}
+        {announcements.length > 0 && (
+          <section
+            className="student-announcement-banner"
+            aria-label="Academy announcements"
+          >
+            <div className="student-announcement-label">
+              <Megaphone size={19} />
+              <span>ACADEMY UPDATES</span>
+            </div>
+
+            <div className="student-announcement-window">
+              <div className="student-announcement-track">
+                {[...announcements, ...announcements].map(
+                  (announcement, index) => {
+                    const categoryIcons = {
+                      exam: CalendarDays,
+                      batch: BookOpen,
+                      holiday: PartyPopper,
+                      important: AlertTriangle,
+                      general: Sparkles,
+                    };
+
+                    const AnnouncementIcon =
+                      categoryIcons[announcement.category] || BellRing;
+
+                    return (
+                      <div
+                        className="student-announcement-item"
+                        key={`${announcement.id}-${index}`}
+                      >
+                        <AnnouncementIcon size={17} />
+
+                        <strong>{announcement.title}</strong>
+
+                        <span>{announcement.message}</span>
+
+                        {announcement.event_date && (
+                          <span className="student-announcement-event">
+                            <CalendarDays size={14} />
+                            {formatDate(announcement.event_date)}
+                            {announcement.event_time
+                              ? ` • ${announcement.event_time.slice(0, 5)}`
+                              : ""}
+                          </span>
+                        )}
+
+                        <span className="student-announcement-separator">
+                          ✦
+                        </span>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* WELCOME SECTION */}
         <section className="student-welcome-section">
           <div>
@@ -709,6 +974,191 @@ export default function StudentDashboard() {
               <h3>No progress updates yet</h3>
               <p>Your progress updates will appear here.</p>
             </div>
+          )}
+        </section>
+
+        {/* ASSESSMENT PERFORMANCE & HISTORY */}
+        <section className="student-section-card student-assessments-section">
+          <div className="student-card-heading">
+            <div>
+              <h2>My Assessment Performance</h2>
+              <p>Track your test scores and overall performance.</p>
+            </div>
+
+            <ClipboardCheck size={22} />
+          </div>
+
+          {loading ? (
+            <div className="student-loading">
+              Loading assessment performance...
+            </div>
+          ) : (
+            <>
+              {/* PERFORMANCE SUMMARY */}
+              <div className="student-assessment-summary">
+                <div className="student-assessment-summary-card">
+                  <span>Total Assessments</span>
+                  <strong>{assessmentSummary.total}</strong>
+                </div>
+
+                <div className="student-assessment-summary-card">
+                  <span>Average Score</span>
+                  <strong>{assessmentSummary.average.toFixed(1)}%</strong>
+                </div>
+
+                <div className="student-assessment-summary-card">
+                  <span>Best Performance</span>
+                  <strong>{assessmentSummary.best.toFixed(1)}%</strong>
+                </div>
+
+                <div className="student-assessment-summary-card">
+                  <span>Pass Rate</span>
+                  <strong>
+                    {assessmentSummary.gradedCount
+                      ? `${assessmentSummary.passRate.toFixed(1)}%`
+                      : "N/A"}
+                  </strong>
+                  <small>
+                    {assessmentSummary.passedCount} of{" "}
+                    {assessmentSummary.gradedCount} graded
+                  </small>
+                </div>
+              </div>
+
+              {/* ASSESSMENT HISTORY */}
+              <div className="student-assessment-history-heading">
+                <div>
+                  <h3>Assessment History</h3>
+                  <p>Your previous tests and evaluator feedback.</p>
+                </div>
+
+                <span>{assessmentSummary.total} Results</span>
+              </div>
+
+              {assessmentResults.length > 0 ? (
+                <div className="student-assessment-list">
+                  {assessmentResults.map((result) => {
+                    const obtained = Number(result.marks_obtained || 0);
+                    const maximum = Number(result.maximum_marks || 0);
+
+                    const percentage =
+                      maximum > 0
+                        ? (obtained / maximum) * 100
+                        : 0;
+
+                    const hasPassingMarks =
+                      result.passing_marks !== null &&
+                      result.passing_marks !== undefined &&
+                      result.passing_marks !== "";
+
+                    const passed =
+                      hasPassingMarks &&
+                      obtained >= Number(result.passing_marks);
+
+                    return (
+                      <article
+                        className="student-assessment-card"
+                        key={result.id}
+                      >
+                        <div className="student-assessment-card-top">
+                          <div className="student-assessment-title">
+                            <div className="student-assessment-icon">
+                              <Award size={20} />
+                            </div>
+
+                            <div>
+                              <h3>{result.assessment_name}</h3>
+                              <span>
+                                {result.assessment_type || "Assessment"}
+                                {" • "}
+                                {formatDate(result.assessment_date)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <span
+                            className={`student-assessment-status ${
+                              hasPassingMarks
+                                ? passed
+                                  ? "passed"
+                                  : "not-passed"
+                                : "recorded"
+                            }`}
+                          >
+                            {hasPassingMarks
+                              ? passed
+                                ? "Passed"
+                                : "Needs Improvement"
+                              : "Result Recorded"}
+                          </span>
+                        </div>
+
+                        <div className="student-assessment-score-grid">
+                          <div>
+                            <span>Marks Obtained</span>
+                            <strong>
+                              {obtained} / {maximum}
+                            </strong>
+                          </div>
+
+                          <div>
+                            <span>Percentage</span>
+                            <strong>{percentage.toFixed(1)}%</strong>
+                          </div>
+
+                          {hasPassingMarks && (
+                            <div>
+                              <span>Passing Marks</span>
+                              <strong>
+                                {Number(result.passing_marks)}
+                              </strong>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="student-assessment-progress-track">
+                          <div
+                            className="student-assessment-progress-fill"
+                            style={{
+                              width: `${Math.min(
+                                100,
+                                Math.max(0, percentage)
+                              )}%`,
+                            }}
+                          />
+                        </div>
+
+                        {result.feedback && (
+                          <div className="student-assessment-feedback">
+                            <strong>Evaluator Feedback</strong>
+                            <p>{result.feedback}</p>
+                          </div>
+                        )}
+
+                        <div className="student-assessment-evaluator">
+                          <User size={15} />
+                          <span>
+                            Evaluated by:{" "}
+                            <strong>
+                              {result.evaluator_name || "Academy Team"}
+                            </strong>
+                          </span>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="student-empty-state compact">
+                  <ClipboardCheck size={32} />
+                  <h3>No assessment results yet</h3>
+                  <p>
+                    Your test results will appear here once your Academy
+                    Admin or Mentor adds them.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </section>
 

@@ -27,6 +27,8 @@ import Payments from "./pages/admin/Payments";
 import Progress from "./pages/admin/Progress";
 import ResolvedQueries from "./pages/admin/ResolvedQueries";
 import AdminManagement from "./pages/admin/AdminManagement";
+import Assessments from "./pages/admin/Assessments";
+import Announcements from "./pages/admin/Announcements";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
 
@@ -69,7 +71,7 @@ function AppLoadingScreen() {
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
 
-  // Keep the loading screen visible for at least 3 seconds.
+  // Keep loading screen visible for at least 3 seconds.
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
@@ -153,10 +155,19 @@ function AppRoutes() {
         <Route path="enrollments" element={<Enrollments />} />
         <Route path="payments" element={<Payments />} />
         <Route path="progress" element={<Progress />} />
+
+        {/* Assessments & Results */}
+        <Route path="assessments" element={<Assessments />} />
+
+        {/* Announcements & Approval */}
+        <Route path="announcements" element={<Announcements />} />
+
         <Route
           path="resolved-queries"
           element={<ResolvedQueries />}
         />
+
+        {/* Super Admin Only */}
         <Route
           path="admin-management"
           element={
@@ -178,7 +189,8 @@ function AppRoutes() {
       />
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />}
+      />
     </Routes>
   );
 }

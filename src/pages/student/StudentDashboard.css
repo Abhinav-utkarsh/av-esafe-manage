@@ -1065,3 +1065,474 @@
   color: #174fcf;
   text-decoration: underline;
 }
+
+/* ASSESSMENT RESULTS - COMPACT LAYOUT */
+
+.student-assessment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 420px));
+  gap: 14px;
+  align-items: start;
+}
+
+.student-assessment-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e3eaf5;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.025);
+}
+
+.student-assessment-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.student-assessment-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.student-assessment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.student-assessment-title h3 {
+  margin: 0 0 4px;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.student-assessment-title span {
+  color: #718096;
+  font-size: 11px;
+}
+
+.student-assessment-status {
+  flex-shrink: 0;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.student-assessment-status.passed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.student-assessment-status.not-passed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.student-assessment-status.recorded {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.student-assessment-score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.student-assessment-score-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.student-assessment-score-grid span {
+  color: #718096;
+  font-size: 10px;
+}
+
+.student-assessment-score-grid strong {
+  color: #172033;
+  font-size: 14px;
+}
+
+.student-assessment-progress-track {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #e8edf5;
+}
+
+.student-assessment-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.student-assessment-feedback {
+  margin-top: 12px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.student-assessment-feedback strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #334155;
+  font-size: 11px;
+}
+
+.student-assessment-feedback p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.student-assessment-evaluator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 11px;
+  padding-top: 9px;
+  border-top: 1px solid #edf0f5;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.student-assessment-evaluator strong {
+  color: #2563eb;
+}
+
+@media (max-width: 600px) {
+  .student-assessment-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .student-assessment-card {
+    padding: 14px;
+  }
+}
+
+
+
+/* COMPACT COURSE & SERVICE CARDS */
+
+.student-course-grid {
+  gap: 12px;
+}
+
+.student-course-card {
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.student-course-card:hover {
+  border-color: #cbdafa;
+  box-shadow: 0 4px 14px rgba(28, 59, 104, 0.045);
+}
+
+.student-course-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+.student-course-status {
+  padding: 5px 8px;
+  font-size: 9px;
+}
+
+.student-course-card h3 {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.student-course-price {
+  font-size: 10px;
+}
+
+.student-course-progress-label {
+  margin: 13px 0 7px;
+  font-size: 10px;
+}
+
+.student-progress-track {
+  height: 6px;
+}
+
+.student-course-note {
+  margin-top: 11px;
+  padding: 9px;
+}
+
+.student-course-details {
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.student-course-details > div {
+  gap: 7px;
+  font-size: 10px;
+}
+
+.student-course-details svg {
+  width: 14px;
+  height: 14px;
+}
+
+.student-mentor-phone {
+  font-size: 11px;
+}
+
+.student-course-updated {
+  margin-top: 11px;
+  padding-top: 9px;
+  font-size: 9px;
+}
+
+@media (max-width: 700px) {
+  .student-course-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .student-course-card {
+    padding: 13px;
+  }
+}
+
+/* ASSESSMENT PERFORMANCE SUMMARY */
+
+.student-assessment-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.student-assessment-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid #e5ebf5;
+  border-radius: 10px;
+  background: #f9fbff;
+}
+
+.student-assessment-summary-card span {
+  color: #71839f;
+  font-size: 11px;
+}
+
+.student-assessment-summary-card strong {
+  color: #203957;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+.student-assessment-summary-card small {
+  color: #91a1b9;
+  font-size: 10px;
+}
+
+.student-assessment-history-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.student-assessment-history-heading h3 {
+  margin: 0 0 4px;
+  color: #203957;
+  font-size: 14px;
+}
+
+.student-assessment-history-heading p {
+  margin: 0;
+  color: #8798b0;
+  font-size: 11px;
+}
+
+.student-assessment-history-heading > span {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #edf3ff;
+  color: #2864ed;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 850px) {
+  .student-assessment-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .student-assessment-summary {
+    gap: 9px;
+  }
+
+  .student-assessment-summary-card {
+    padding: 11px;
+  }
+
+  .student-assessment-summary-card strong {
+    font-size: 18px;
+  }
+}
+
+/* =========================================
+   STUDENT ANNOUNCEMENT TICKER
+========================================= */
+
+.student-announcement-banner {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #BFDBFE;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #EFF6FF, #F5F3FF, #ECFEFF);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.07);
+  margin-bottom: 22px;
+}
+
+.student-announcement-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex-shrink: 0;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #2563EB, #4F46E5);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  z-index: 2;
+}
+
+.student-announcement-window {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.student-announcement-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: studentAnnouncementScroll 38s linear infinite;
+  will-change: transform;
+}
+
+.student-announcement-window:hover .student-announcement-track {
+  animation-play-state: paused;
+}
+
+.student-announcement-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  color: #1E40AF;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.student-announcement-item > svg {
+  flex-shrink: 0;
+  color: #4F46E5;
+}
+
+.student-announcement-item strong {
+  color: #1E3A8A;
+  font-weight: 800;
+}
+
+.student-announcement-item > span {
+  color: #475569;
+  font-weight: 500;
+}
+
+.student-announcement-item .student-announcement-event {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #DBEAFE;
+  color: #1D4ED8;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.student-announcement-separator {
+  color: #818CF8 !important;
+  font-size: 18px !important;
+  padding: 0 12px;
+}
+
+@keyframes studentAnnouncementScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .student-announcement-banner {
+    flex-direction: column;
+  }
+
+  .student-announcement-label {
+    justify-content: flex-start;
+    padding: 10px 13px;
+  }
+
+  .student-announcement-item {
+    padding: 12px 15px;
+    font-size: 11px;
+  }
+}
+
+/* REDUCED MOTION ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  .student-announcement-track {
+    animation: none;
+  }
+}

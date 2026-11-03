@@ -12,6 +12,8 @@ import {
   ClipboardList,
   Wallet,
   ChartNoAxesCombined,
+  ClipboardCheck,
+  Megaphone,
   Menu,
   X,
   LogOut,
@@ -24,7 +26,7 @@ import {
   LoaderCircle,
   RefreshCw,
   Archive,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -39,7 +41,17 @@ const menuItems = [
   { label: "Batches", path: "/admin/batches", icon: CalendarDays },
   { label: "Enrollments", path: "/admin/enrollments", icon: ClipboardList },
   { label: "Payments", path: "/admin/payments", icon: Wallet },
-  { label: "Progress", path: "/admin/progress", icon: ChartNoAxesCombined }
+  { label: "Progress", path: "/admin/progress", icon: ChartNoAxesCombined },
+  {
+    label: "Assessments & Results",
+    path: "/admin/assessments",
+    icon: ClipboardCheck,
+  },
+  {
+    label: "Announcements",
+    path: "/admin/announcements",
+    icon: Megaphone,
+  },
 ];
 
 export default function AdminLayout() {
@@ -72,7 +84,7 @@ export default function AdminLayout() {
       if (error) throw error;
 
       const studentIds = [
-        ...new Set((messages || []).map((item) => item.student_id))
+        ...new Set((messages || []).map((item) => item.student_id)),
       ];
 
       let profilesById = {};
@@ -92,7 +104,7 @@ export default function AdminLayout() {
 
       const formattedMessages = (messages || []).map((item) => ({
         ...item,
-        student: profilesById[item.student_id] || null
+        student: profilesById[item.student_id] || null,
       }));
 
       setNotifications(formattedMessages);
@@ -100,7 +112,6 @@ export default function AdminLayout() {
       setUnreadCount(
         formattedMessages.filter((item) => item.status === "new").length
       );
-
     } catch (error) {
       console.error("Notification loading failed:", error.message);
     } finally {
@@ -119,7 +130,7 @@ export default function AdminLayout() {
         {
           event: "*",
           schema: "public",
-          table: "student_messages"
+          table: "student_messages",
         },
         () => {
           loadNotifications();
@@ -174,7 +185,6 @@ export default function AdminLayout() {
       }
 
       await loadNotifications();
-
     } catch (error) {
       console.error("Message status update failed:", error.message);
       alert(`Could not update message: ${error.message}`);
@@ -208,13 +218,12 @@ export default function AdminLayout() {
       month: "short",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   };
 
   return (
     <div className="admin-layout">
-
       {/* Mobile Overlay */}
       {mobileOpen && (
         <div
@@ -229,9 +238,7 @@ export default function AdminLayout() {
           ${collapsed ? "collapsed" : ""}
           ${mobileOpen ? "mobile-open" : ""}`}
       >
-
         <div className="sidebar-brand">
-
           <div className="sidebar-brand-icon">
             <GraduationCap size={25} />
           </div>
@@ -250,7 +257,6 @@ export default function AdminLayout() {
           >
             <X size={20} />
           </button>
-
         </div>
 
         <div className="sidebar-section-label">
@@ -258,7 +264,6 @@ export default function AdminLayout() {
         </div>
 
         <nav className="sidebar-navigation">
-
           {/* Standard Admin Navigation */}
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -295,35 +300,29 @@ export default function AdminLayout() {
               {!collapsed && <span>Admin Management</span>}
             </NavLink>
           )}
-
         </nav>
 
         <div className="sidebar-bottom">
-
           <button
             className="sidebar-collapse-button"
             onClick={() => setCollapsed(!collapsed)}
           >
-            {collapsed
-              ? <ChevronRight size={19} />
-              : <ChevronLeft size={19} />
-            }
+            {collapsed ? (
+              <ChevronRight size={19} />
+            ) : (
+              <ChevronLeft size={19} />
+            )}
 
             {!collapsed && <span>Collapse Sidebar</span>}
           </button>
-
         </div>
-
       </aside>
 
       {/* Main Content */}
       <main className={`admin-main ${collapsed ? "expanded" : ""}`}>
-
         {/* Topbar */}
         <header className="admin-topbar">
-
           <div className="topbar-left">
-
             <button
               className="mobile-menu-button"
               onClick={() => setMobileOpen(true)}
@@ -336,17 +335,14 @@ export default function AdminLayout() {
               <h2>Admin Portal</h2>
               <p>Training Management System</p>
             </div>
-
           </div>
 
           <div className="topbar-right">
-
             {/* Notification Bell */}
             <div
               className="admin-notification-wrapper"
               ref={notificationRef}
             >
-
               <button
                 className={`admin-notification-button ${
                   notificationOpen ? "notification-active" : ""
@@ -366,10 +362,8 @@ export default function AdminLayout() {
 
               {notificationOpen && (
                 <div className="admin-notification-panel">
-
                   {/* Popup Header */}
                   <div className="notification-panel-header">
-
                     <div>
                       <h3>Student Messages</h3>
                       <p>
@@ -395,14 +389,11 @@ export default function AdminLayout() {
                         }
                       />
                     </button>
-
                   </div>
 
                   {/* Notification List */}
                   <div className="notification-list">
-
                     {loadingNotifications && notifications.length === 0 ? (
-
                       <div className="notification-empty">
                         <LoaderCircle
                           size={22}
@@ -410,17 +401,13 @@ export default function AdminLayout() {
                         />
                         <p>Loading messages...</p>
                       </div>
-
                     ) : notifications.length === 0 ? (
-
                       <div className="notification-empty">
                         <MessageCircle size={30} />
                         <strong>No active messages</strong>
                         <p>New student queries will appear here.</p>
                       </div>
-
                     ) : (
-
                       notifications.map((item) => (
                         <div
                           key={item.id}
@@ -428,9 +415,7 @@ export default function AdminLayout() {
                             item.status === "new" ? "unread" : ""
                           }`}
                         >
-
                           <div className="notification-item-top">
-
                             <div className="notification-student">
                               <strong>
                                 {item.student?.full_name || "Student"}
@@ -446,7 +431,6 @@ export default function AdminLayout() {
                             >
                               {item.status === "new" ? "New" : "Read"}
                             </span>
-
                           </div>
 
                           <p className="notification-message">
@@ -458,7 +442,6 @@ export default function AdminLayout() {
                           </span>
 
                           <div className="notification-actions">
-
                             {item.status === "new" && (
                               <button
                                 onClick={() =>
@@ -481,7 +464,6 @@ export default function AdminLayout() {
                               <CheckCheck size={14} />
                               Mark resolved
                             </button>
-
                           </div>
 
                           {updatingMessageId === item.id && (
@@ -489,17 +471,13 @@ export default function AdminLayout() {
                               Updating...
                             </span>
                           )}
-
                         </div>
                       ))
-
                     )}
-
                   </div>
 
                   {/* Resolved Queries Navigation */}
                   <div className="notification-panel-footer">
-
                     <button
                       className="notification-resolved-link"
                       onClick={openResolvedQueries}
@@ -508,17 +486,13 @@ export default function AdminLayout() {
                       Resolved Queries
                       <ChevronRight size={16} />
                     </button>
-
                   </div>
-
                 </div>
               )}
-
             </div>
 
             {/* Admin Profile */}
             <div className="admin-profile">
-
               <div className="admin-avatar">
                 {profile?.full_name?.charAt(0)?.toUpperCase() || "A"}
               </div>
@@ -529,7 +503,6 @@ export default function AdminLayout() {
                   {isSuperAdmin ? "Super Administrator" : "Administrator"}
                 </span>
               </div>
-
             </div>
 
             {/* Logout */}
@@ -540,18 +513,14 @@ export default function AdminLayout() {
             >
               <LogOut size={19} />
             </button>
-
           </div>
-
         </header>
 
         {/* Page Content */}
         <section className="admin-content">
           <Outlet />
         </section>
-
       </main>
-
     </div>
   );
 }
