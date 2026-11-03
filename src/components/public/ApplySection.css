@@ -1,0 +1,1459 @@
+/* =========================================
+   Av_eSAFE Training — Application Section
+   Two-column layout | Navy + Blue Theme
+========================================= */
+
+.apply-section {
+  width: 100%;
+  padding: 70px 24px;
+  background: #f5f8fd;
+  box-sizing: border-box;
+  scroll-margin-top: 100px;
+}
+
+.apply-section *,
+.apply-section *::before,
+.apply-section *::after {
+  box-sizing: border-box;
+}
+
+/* Main Container */
+
+.application-form-only-container {
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* =========================================
+   Main Two-Column Layout
+========================================= */
+
+.apply-layout-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: stretch;
+  gap: 48px;
+
+  width: 100%;
+  min-height: 720px;
+  padding: 48px;
+
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 30px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(59, 130, 246, 0.22),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #173968 0%,
+      #214f91 52%,
+      #2869df 100%
+    );
+
+  box-shadow: 0 25px 70px rgba(23, 57, 104, 0.14);
+}
+
+/* =========================================
+   Left Introduction Panel
+========================================= */
+
+.apply-intro-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: 24px;
+}
+
+.apply-intro-content {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  color: #ffffff;
+}
+
+.apply-intro-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 25px;
+
+  color: #9debd7;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.apply-intro-content h2 {
+  max-width: 540px;
+  margin: 0 0 22px;
+
+  color: #ffffff;
+  font-size: clamp(34px, 3.5vw, 54px);
+  font-weight: 800;
+  line-height: 1.17;
+  letter-spacing: -1.8px;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.apply-intro-content p {
+  max-width: 500px;
+  margin: 0 0 28px;
+
+  color: rgba(235, 244, 255, 0.82);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.85;
+}
+
+.apply-intro-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  margin: 0 0 24px;
+  padding: 0;
+
+  list-style: none;
+}
+
+.apply-intro-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.apply-intro-benefits li svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #a5f3dc;
+}
+
+.apply-intro-content small {
+  display: block;
+  margin-top: 20px;
+
+  color: rgba(224, 238, 255, 0.68);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   Right Application Form Panel
+========================================= */
+
+.application-form-wrap {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+
+.application-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  width: 100%;
+  max-width: 680px;
+  min-width: 0;
+
+  padding: 38px;
+  margin: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 24px;
+
+  background: #e5eefb;
+  color: #193454;
+
+  box-shadow: 0 18px 45px rgba(7, 28, 65, 0.12);
+}
+
+/* Form Heading */
+
+.application-form-heading {
+  width: 100%;
+  margin: 0;
+}
+
+.application-form-heading > span {
+  display: block;
+  margin-bottom: 10px;
+
+  color: #214d87;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.7px;
+  line-height: 1.5;
+}
+
+.application-form-heading h3 {
+  margin: 0 0 10px;
+
+  color: #193454;
+  font-size: clamp(23px, 2vw, 30px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+.application-form-heading p {
+  margin: 0;
+
+  color: #7186a3;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   Form Fields Grid
+========================================= */
+
+.application-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px 18px;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.application-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.application-field-full {
+  grid-column: 1 / -1;
+}
+
+/* Field Labels */
+
+.application-field > span {
+  display: block;
+
+  color: #3b4e68;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* Input Controls */
+
+.application-field input,
+.application-field select,
+.application-field textarea {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 48px;
+
+  margin: 0;
+  padding: 13px 14px;
+
+  border: 1px solid #cbdcf2;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #193454;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.application-field input::placeholder,
+.application-field textarea::placeholder {
+  color: #8ba0bf;
+  opacity: 1;
+}
+
+.application-field input:focus,
+.application-field select:focus,
+.application-field textarea:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.application-field select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.application-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.application-field input:disabled,
+.application-field select:disabled,
+.application-field textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* =========================================
+   Course / Bundle Selection Trigger
+========================================= */
+
+.course-picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 70px;
+
+  padding: 15px 16px;
+
+  border: 1px solid #cbdcf2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #193454;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.course-picker-trigger:hover {
+  border-color: #6a9ef0;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.08);
+}
+
+.course-picker-trigger:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.2);
+  outline-offset: 2px;
+}
+
+.course-picker-value {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.course-picker-value strong {
+  color: #193454;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.course-picker-value span {
+  color: #8195b2;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.course-picker-trigger > svg {
+  flex: 0 0 auto;
+  color: #193454;
+}
+
+/* =========================================
+   Privacy Note
+========================================= */
+
+.application-privacy-note {
+  margin: 0;
+  padding: 0;
+
+  color: #7186a3;
+  font-size: 11px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+/* =========================================
+   Primary Buttons
+========================================= */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 48px;
+  padding: 13px 20px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #3478f6, #2456e8);
+  color: #ffffff;
+
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+}
+
+.button-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+  transform: translateY(-1px);
+}
+
+.button-primary:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.25);
+  outline-offset: 3px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Continue to Payment */
+
+.application-submit {
+  width: 100%;
+  min-height: 50px;
+
+  margin: 0;
+  padding: 14px 20px;
+
+  border-radius: 11px;
+}
+
+/* =========================================
+   Validation / Error Messages
+========================================= */
+
+.application-error,
+.course-modal-error {
+  margin: 0;
+  padding: 12px 14px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fff1f2;
+  color: #b91c1c;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* =========================================
+   Success Screen
+========================================= */
+
+.application-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 680px;
+  min-height: 520px;
+
+  padding: 40px;
+  margin: auto;
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 24px;
+
+  background: #e5eefb;
+  color: #193454;
+
+  text-align: center;
+}
+
+.application-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
+
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.application-success h3 {
+  margin: 0 0 14px;
+
+  color: #193454;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.application-success p {
+  max-width: 440px;
+  margin: 0 0 28px;
+
+  color: #7186a3;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   Course / Bundle Modal
+========================================= */
+
+.course-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+
+  overflow-y: auto;
+
+  background: rgba(10, 25, 48, 0.65);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.course-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 760px;
+  max-height: min(90vh, 900px);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid #dbe7f6;
+  border-radius: 22px;
+
+  background: #f8fbff;
+  color: #193454;
+
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25);
+}
+
+.course-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 24px 28px;
+
+  border-bottom: 1px solid #dbe7f6;
+  background: #ffffff;
+}
+
+.course-modal-header h3 {
+  margin: 0;
+
+  color: #193454;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.course-modal-header p {
+  margin: 8px 0 0;
+
+  color: #7186a3;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.course-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  border: 1px solid #dbe7f6;
+  border-radius: 10px;
+
+  background: #f1f6fd;
+  color: #193454;
+
+  cursor: pointer;
+}
+
+.course-modal-close:hover {
+  background: #e5eefb;
+}
+
+.course-modal-body {
+  flex: 1;
+  min-height: 0;
+
+  padding: 24px 28px;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.course-modal-section-title {
+  margin: 0 0 16px;
+
+  color: #193454;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.course-option-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  width: 100%;
+}
+
+.course-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 16px;
+
+  border: 1px solid #d5e2f3;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #193454;
+
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.course-option:hover {
+  border-color: #8bb5f6;
+  background: #f5f9ff;
+}
+
+.course-option.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.08);
+}
+
+.course-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.course-option-content strong {
+  color: #193454;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.course-option-content p {
+  margin: 0;
+
+  color: #7186a3;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.course-option-price {
+  flex: 0 0 auto;
+
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Bundle Cards */
+
+.course-bundle {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 20px;
+
+  border: 1px solid #d5e2f3;
+  border-radius: 14px;
+
+  background: #ffffff;
+  color: #193454;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.course-bundle:hover {
+  border-color: #8bb5f6;
+  background: #f5f9ff;
+}
+
+.course-bundle.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.08);
+}
+
+.course-bundle-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.course-bundle-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.course-bundle-label {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 8px;
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  background: #eaf2ff;
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.course-bundle-content h4,
+.course-bundle-title-row h4 {
+  margin: 0;
+
+  color: #193454;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.course-bundle-description {
+  margin: 8px 0 0;
+
+  color: #7186a3;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.course-bundle-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  flex: 0 0 auto;
+
+  color: #2563eb;
+  font-size: 18px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.course-bundle-price del {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.course-bundle-includes {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.course-bundle-includes li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  color: #52647c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.course-bundle-includes li svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+
+  color: #16a34a;
+}
+
+/* Bundle Coding Track Select */
+
+.bundle-track-select {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+
+  margin-top: 12px;
+  padding: 12px 14px;
+
+  border: 1px solid #cbdcf2;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #193454;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+}
+
+.bundle-track-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* Modal Footer */
+
+.course-modal-footer {
+  padding: 20px 28px;
+
+  border-top: 1px solid #dbe7f6;
+  background: #ffffff;
+}
+
+.course-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.course-total-row span {
+  color: #52647c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.course-total-row strong {
+  color: #193454;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.course-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.course-cancel-button,
+.course-confirm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 12px 18px;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.course-cancel-button {
+  border: 1px solid #cbdcf2;
+  background: #ffffff;
+  color: #52647c;
+}
+
+.course-cancel-button:hover {
+  background: #f1f6fd;
+}
+
+.course-confirm-button {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.course-confirm-button:hover {
+  background: #1d4ed8;
+}
+
+.course-selection-note {
+  margin: 12px 0 0;
+
+  color: #7186a3;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   UPI Payment Panel
+========================================= */
+
+.upi-payment-panel {
+  width: 100%;
+  min-width: 0;
+}
+
+.upi-payment-heading {
+  margin: 0 0 12px;
+
+  color: #193454;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.upi-payment-description {
+  margin: 0 0 22px;
+
+  color: #7186a3;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.upi-payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 24px;
+
+  width: 100%;
+}
+
+.upi-qr-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 240px;
+
+  padding: 20px;
+
+  border: 1px solid #d5e2f3;
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.upi-qr-frame img,
+.upi-qr-frame canvas,
+.upi-qr-frame svg {
+  display: block;
+
+  max-width: 100%;
+  height: auto;
+}
+
+.upi-payment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.upi-payment-detail {
+  margin: 0;
+  padding: 13px 14px;
+
+  border: 1px solid #d5e2f3;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #52647c;
+
+  font-size: 12px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+.upi-payment-detail strong {
+  color: #193454;
+  font-weight: 800;
+}
+
+.upi-payment-amount {
+  display: block;
+  margin: 0 0 16px;
+
+  color: #2563eb;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.upi-payment-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 16px;
+
+  border: 1px solid #2563eb;
+  border-radius: 9px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+}
+
+.upi-payment-link:hover {
+  background: #1d4ed8;
+}
+
+.upi-payment-warning {
+  margin: 18px 0 0;
+  padding: 13px 15px;
+
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+
+  background: #fffbeb;
+  color: #92400e;
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.upi-payment-confirmation {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.upi-payment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  width: 100%;
+  margin-top: 20px;
+}
+
+.upi-payment-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 12px 16px;
+
+  border: 1px solid #cbdcf2;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #52647c;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+/* =========================================
+   Tablet Layout
+========================================= */
+
+@media (max-width: 1050px) {
+  .apply-section {
+    padding: 55px 20px;
+  }
+
+  .apply-layout-grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 28px;
+
+    padding: 32px;
+    border-radius: 24px;
+  }
+
+  .apply-intro-panel {
+    padding: 14px;
+  }
+
+  .apply-intro-content h2 {
+    font-size: clamp(30px, 3.5vw, 42px);
+    letter-spacing: -1px;
+  }
+
+  .application-form {
+    padding: 28px;
+  }
+}
+
+/* =========================================
+   Mobile / Narrow Tablet
+========================================= */
+
+@media (max-width: 760px) {
+  .apply-section {
+    padding: 35px 14px;
+  }
+
+  .application-form-only-container {
+    max-width: 100%;
+  }
+
+  .apply-layout-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+
+    min-height: auto;
+    padding: 22px;
+
+    border-radius: 22px;
+  }
+
+  .apply-intro-panel {
+    min-height: auto;
+    padding: 16px 8px 8px;
+  }
+
+  .apply-intro-content {
+    max-width: 100%;
+  }
+
+  .apply-intro-eyebrow {
+    margin-bottom: 18px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .apply-intro-content h2 {
+    max-width: 100%;
+    margin-bottom: 16px;
+
+    font-size: clamp(30px, 8vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -1px;
+  }
+
+  .apply-intro-content p {
+    max-width: 100%;
+    margin-bottom: 22px;
+
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .apply-intro-benefits {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .apply-intro-benefits li {
+    font-size: 13px;
+  }
+
+  .apply-intro-content small {
+    font-size: 10px;
+  }
+
+  .application-form-wrap {
+    width: 100%;
+    max-width: none;
+  }
+
+  .application-form {
+    width: 100%;
+    max-width: none;
+
+    gap: 20px;
+    padding: 24px;
+
+    border-radius: 18px;
+  }
+
+  .application-form-heading h3 {
+    font-size: 24px;
+  }
+
+  .application-field-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  .application-field-full {
+    grid-column: auto;
+  }
+
+  .course-option-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .upi-payment-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .upi-qr-frame {
+    min-height: 220px;
+  }
+
+  .course-modal-overlay {
+    padding: 12px;
+  }
+
+  .course-modal {
+    max-height: 94vh;
+    border-radius: 16px;
+  }
+
+  .course-modal-header,
+  .course-modal-body,
+  .course-modal-footer {
+    padding: 18px;
+  }
+
+  .course-modal-header h3 {
+    font-size: 19px;
+  }
+
+  .course-modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .course-cancel-button,
+  .course-confirm-button {
+    width: 100%;
+  }
+
+  .course-bundle-title-row {
+    flex-direction: column;
+  }
+
+  .course-bundle-price {
+    align-items: baseline;
+  }
+}
+
+/* =========================================
+   Small Mobile Screens
+========================================= */
+
+@media (max-width: 420px) {
+  .apply-section {
+    padding: 24px 10px;
+  }
+
+  .apply-layout-grid {
+    gap: 22px;
+    padding: 15px;
+    border-radius: 18px;
+  }
+
+  .apply-intro-panel {
+    padding: 12px 5px 5px;
+  }
+
+  .apply-intro-content h2 {
+    font-size: 30px;
+  }
+
+  .application-form {
+    gap: 18px;
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .application-form-heading h3 {
+    font-size: 22px;
+  }
+
+  .application-field input,
+  .application-field select,
+  .application-field textarea {
+    min-height: 46px;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .course-picker-trigger {
+    min-height: 65px;
+    padding: 13px;
+  }
+
+  .course-picker-value strong {
+    font-size: 12px;
+  }
+
+  .course-picker-value span {
+    font-size: 11px;
+  }
+
+  .application-success {
+    min-height: 400px;
+    padding: 24px;
+  }
+
+  .application-success h3 {
+    font-size: 24px;
+  }
+
+  .upi-payment-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .upi-payment-back,
+  .upi-payment-actions .button {
+    width: 100%;
+  }
+}
+
+/* =========================================
+   Accessibility — Reduced Motion
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .application-field input,
+  .application-field select,
+  .application-field textarea,
+  .course-picker-trigger,
+  .button,
+  .course-option,
+  .course-bundle {
+    transition: none;
+  }
+}
+/* Remove the extra container around the application form */
+.application-form-wrap {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}

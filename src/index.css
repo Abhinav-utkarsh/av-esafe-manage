@@ -1,111 +1,309 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+/* ==========================================
+   Av_eSAFE Academy — Global Design System
+========================================== */
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  font-family: "DM Sans", sans-serif;
+  color: #334155;
+  background: #F4F7FB;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* Brand palette */
+  --color-primary: #142B4A;
+  --color-primary-dark: #0D1F38;
+  --color-accent: #3478F6;
+  --color-accent-dark: #2563D9;
+  --color-teal: #14B8A6;
+
+  /* Text palette */
+  --color-ink: #142B4A;
+  --color-text: #334155;
+  --color-muted: #64748B;
+
+  /* Surface palette */
+  --color-background: #F4F7FB;
+  --color-soft: #EDF3FA;
+  --color-surface: #FFFFFF;
+  --color-white: #FFFFFF;
+  --color-border: #DCE5EF;
+
+  /* Accessibility */
+  --color-focus: rgba(52, 120, 246, 0.55);
+
+  /* Typography */
+  --font-heading: "Manrope", sans-serif;
+
+  /* Layout */
+  --container-width: 1160px;
+  --section-space: 104px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* ==========================================
+   Av_eSAFE Training — Glass Design System
+========================================== */
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+.public-site {
+  --glass-primary: #2563EB;
+  --glass-primary-dark: #1D4ED8;
+  --glass-navy: #0B1730;
+  --glass-navy-light: #142B4A;
+  --glass-teal: #14B8A6;
+
+  /* Background */
+  --glass-background: #F5F8FF;
+  --glass-background-dark: #0B1730;
+
+  /* Glass surfaces */
+  --glass-surface: rgba(255, 255, 255, 0.62);
+  --glass-surface-strong: rgba(255, 255, 255, 0.82);
+  --glass-surface-dark: rgba(15, 23, 42, 0.58);
+
+  /* Glass borders */
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-border-light: rgba(148, 163, 184, 0.22);
+  --glass-border-blue: rgba(37, 99, 235, 0.24);
+
+  /* Blur */
+  --glass-blur: 22px;
+  --glass-blur-strong: 32px;
+
+  /* Shadows */
+  --glass-shadow:
+    0 8px 32px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+  --glass-shadow-hover:
+    0 20px 48px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Typography */
+  --public-heading-font: "Manrope", sans-serif;
+  --public-body-font: "DM Sans", sans-serif;
+
+  /* Layout */
+  --public-container: 1200px;
+  --public-section-space: 100px;
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+
+  color: #334155;
+
+  background:
+    radial-gradient(
+      circle at 5% 5%,
+      rgba(59, 130, 246, 0.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 95% 30%,
+      rgba(20, 184, 166, 0.08),
+      transparent 28%
+    ),
+    #F5F8FF;
+
+  font-family: var(--public-body-font);
+}
+
+/* ==========================================
+   GLOBAL RESET
+========================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+
+  width: 100%;
+  max-width: 100%;
+
+  overflow-x: clip;
+
+  /* Hide vertical scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 body {
   margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  width: 100%;
+  max-width: 100%;
+
+  color: var(--color-text);
+  background: var(--color-background);
+
+  overflow-x: clip;
+
+  /* Keep vertical scrolling enabled */
+  overflow-y: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  min-height: 100vh;
+
+  overflow-x: clip;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ==========================================
+   HIDE SCROLLBARS GLOBALLY
+   Chrome / Edge / Safari
+========================================== */
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+
+  width: 0 !important;
+  height: 0 !important;
+
+  background: transparent !important;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/* Firefox */
+html,
+body,
+#root,
+* {
+  scrollbar-width: none !important;
+}
+
+/* ==========================================
+   GLOBAL TYPOGRAPHY
+========================================== */
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: "DM Sans", sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font-size: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  color: inherit;
+}
+
+img,
+svg {
+  display: block;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+::selection {
+  color: #FFFFFF;
+  background: var(--color-accent);
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --section-space: 72px;
+  }
+
+  .public-site {
+    --public-section-space: 72px;
+    --glass-blur: 16px;
+    --glass-blur-strong: 24px;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+/* ==========================================
+   ACCESSIBILITY — REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
   }
 }
-p {
-  margin: 0;
+/* FORCE HIDE PAGE SCROLLBARS */
+html,
+body,
+#root {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+html,
+body {
+  overflow-x: hidden !important;
+}
+
+* {
+  scrollbar-width: none !important;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

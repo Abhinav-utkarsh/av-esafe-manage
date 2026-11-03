@@ -1,0 +1,560 @@
+
+/* =========================================
+   PUBLIC NAVBAR
+========================================= */
+
+.public-navbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+  padding: 0;
+
+  transition:
+    padding 0.4s ease,
+    background 0.4s ease;
+}
+
+.public-navbar {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  max-width: 100%;
+  min-height: 88px;
+
+  margin: 0 auto;
+  padding: 18px 5.5%;
+
+  background: rgba(248, 251, 255, 0.98);
+
+  border: 1px solid transparent;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    min-height 0.4s ease,
+    padding 0.4s ease,
+    background 0.4s ease,
+    border-radius 0.4s ease,
+    border 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* =========================================
+   SCROLLED TRANSPARENT GLASS NAVBAR
+========================================= */
+
+.public-navbar-wrapper.navbar-scrolled {
+  padding: 12px 0;
+}
+
+.public-navbar-wrapper.navbar-scrolled
+.public-navbar {
+  position: relative;
+
+  width: calc(100% - 80px);
+  max-width: 1480px;
+
+  min-height: 70px;
+
+  padding: 12px 28px;
+
+  /* Transparent glass background */
+  background: rgba(255, 255, 255, 0.42);
+
+  /* Realistic glass blur */
+  backdrop-filter: blur(26px) saturate(160%);
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 24px;
+
+  /* Layered glass shadow */
+  box-shadow:
+    0 12px 35px rgba(15, 42, 86, 0.07),
+    0 3px 10px rgba(15, 42, 86, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
+  overflow: visible;
+}
+
+/* =========================================
+   GLASS REFLECTION
+========================================= */
+
+.public-navbar-wrapper.navbar-scrolled
+.public-navbar::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.30) 0%,
+    rgba(255, 255, 255, 0.10) 35%,
+    rgba(255, 255, 255, 0.02) 65%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep navbar contents above glass reflection */
+
+.public-navbar-brand,
+.public-navbar-links,
+.public-navbar-apply,
+.public-navbar-menu-button {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================
+   BRAND - LOGO ONLY
+========================================= */
+
+.public-navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.public-navbar-logo-image {
+  display: block;
+
+  width: 150px;
+  height: 55px;
+
+  object-fit: contain;
+
+  transition:
+    width 0.4s ease,
+    height 0.4s ease;
+}
+
+/* Scrolled Logo */
+
+.public-navbar-wrapper.navbar-scrolled
+.public-navbar-logo-image {
+  width: 125px;
+  height: 45px;
+}
+
+/* =========================================
+   NAVIGATION LINKS
+========================================= */
+
+.public-navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 30px;
+}
+
+.public-navbar-link {
+  position: relative;
+
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: color 0.25s ease;
+}
+
+.public-navbar-link::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+
+  width: 0;
+  height: 2px;
+
+  background: #2563eb;
+  border-radius: 10px;
+
+  transition: width 0.3s ease;
+}
+
+.public-navbar-link:hover {
+  color: #2563eb;
+}
+
+.public-navbar-link:hover::after {
+  width: 100%;
+}
+
+/* =========================================
+   APPLY BUTTON
+========================================= */
+
+.public-navbar-apply,
+.public-navbar-mobile-apply {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 14px 23px;
+
+  color: #ffffff;
+
+  background: linear-gradient(
+    135deg,
+    #3478ff,
+    #1d4ed8
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    padding 0.4s ease;
+}
+
+.public-navbar-apply:hover,
+.public-navbar-mobile-apply:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 25px rgba(37, 99, 235, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.public-navbar-wrapper.navbar-scrolled
+.public-navbar-apply {
+  padding: 12px 20px;
+}
+
+/* =========================================
+   MOBILE MENU BUTTON
+========================================= */
+
+.public-navbar-menu-button {
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  color: #102a56;
+
+  background: rgba(239, 246, 255, 0.9);
+
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  border-radius: 13px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.public-navbar-menu-button:hover {
+  background: #dbeafe;
+}
+
+.public-navbar-mobile-apply {
+  display: none;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1100px) {
+  .public-navbar {
+    padding: 18px 3%;
+  }
+
+  .public-navbar-links {
+    gap: 18px;
+  }
+
+  .public-navbar-link {
+    font-size: 12px;
+  }
+
+  .public-navbar-apply {
+    padding: 12px 17px;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled
+  .public-navbar {
+    width: calc(100% - 40px);
+    padding: 12px 20px;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled
+  .public-navbar-logo-image {
+    width: 115px;
+    height: 42px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 850px) {
+  .public-navbar {
+    min-height: 76px;
+    padding: 15px 22px;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled {
+    padding: 8px 0;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled
+  .public-navbar {
+    width: calc(100% - 24px);
+    min-height: 68px;
+
+    padding: 12px 16px;
+
+    border-radius: 20px;
+  }
+
+  .public-navbar-menu-button {
+    display: flex;
+  }
+
+  .public-navbar-apply {
+    display: none;
+  }
+
+  .public-navbar-links {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    left: 12px;
+    right: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 0;
+
+    padding: 12px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 22px;
+
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+
+    box-shadow:
+      0 15px 45px rgba(15, 42, 86, 0.12);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-10px);
+
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  .public-navbar-links.active {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+  }
+
+  .public-navbar-link {
+    display: block;
+
+    padding: 15px 14px;
+
+    color: #334155;
+
+    font-size: 14px;
+
+    border-radius: 12px;
+  }
+
+  .public-navbar-link::after {
+    display: none;
+  }
+
+  .public-navbar-link:hover {
+    background: #eff6ff;
+  }
+
+  .public-navbar-mobile-apply {
+    display: flex;
+
+    margin-top: 8px;
+    padding: 15px;
+
+    border-radius: 13px;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .public-navbar {
+    padding: 14px 16px;
+  }
+
+  .public-navbar-logo-image {
+    width: 125px;
+    height: 48px;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled
+  .public-navbar {
+    width: calc(100% - 20px);
+    padding: 10px 13px;
+  }
+
+  .public-navbar-wrapper.navbar-scrolled
+  .public-navbar-logo-image {
+    width: 110px;
+    height: 42px;
+  }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .public-navbar,
+  .public-navbar-wrapper,
+  .public-navbar-link,
+  .public-navbar-apply,
+  .public-navbar-mobile-apply,
+  .public-navbar-logo-image {
+    transition: none;
+  }
+}
+
+/* ==========================================
+   MATCH NAVBAR LINK TYPOGRAPHY
+========================================== */
+
+.public-navbar-links .public-navbar-link {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #475569;
+}
+
+/* Buttons: How It Works & FAQs */
+
+.public-navbar-links button.public-navbar-link {
+  appearance: none;
+  -webkit-appearance: none;
+
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #475569;
+
+  padding: 0;
+  margin: 0;
+
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Hover */
+
+.public-navbar-links button.public-navbar-link:hover {
+  color: #2563eb;
+  background: transparent;
+  border: none;
+}
+
+/* Focus */
+
+.public-navbar-links button.public-navbar-link:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+}
+/* ==========================================
+   NAVBAR CTA BUTTON COLORS
+========================================== */
+
+/* Home and other public pages - GREEN Sign In */
+
+.navbar-signin-green {
+  background: linear-gradient(135deg, #16a34a, #15803d) !important;
+  color: #ffffff !important;
+  border-color: #16a34a !important;
+}
+
+.navbar-signin-green:hover {
+  background: linear-gradient(135deg, #15803d, #166534) !important;
+  border-color: #15803d !important;
+}
+
+/* Login page - BLUE Apply Now */
+
+.navbar-apply-blue {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.navbar-apply-blue:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+  border-color: #1d4ed8 !important;
+}

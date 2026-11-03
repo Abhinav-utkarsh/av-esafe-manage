@@ -1,0 +1,384 @@
+
+/* =========================================
+   Av_eSAFE Training — Light Glass Footer
+   Centered Layout | Ice Blue + Navy + Teal
+========================================= */
+
+.site-footer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  margin: 0;
+  padding: 68px 24px 0;
+  color: #334155;
+
+  background:
+    radial-gradient(circle at 8% 5%, rgba(96, 165, 250, 0.16), transparent 35%),
+    radial-gradient(circle at 90% 30%, rgba(45, 212, 191, 0.12), transparent 32%),
+    linear-gradient(135deg, #f0f7ff 0%, #e8f2ff 48%, #f3faff 100%);
+
+  border-top: 1px solid rgba(147, 197, 253, 0.45);
+  box-sizing: border-box;
+}
+
+/* Top Gradient Accent */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #60a5fa,
+    #2dd4bf,
+    transparent
+  );
+
+  pointer-events: none;
+}
+
+/* Decorative Glass Rings */
+.site-footer::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 300px;
+  height: 300px;
+  right: -140px;
+  bottom: -170px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(59, 130, 246, 0.13);
+
+  box-shadow:
+    0 0 0 35px rgba(59, 130, 246, 0.035),
+    0 0 0 70px rgba(59, 130, 246, 0.025);
+
+  pointer-events: none;
+}
+
+/* =========================================
+   Footer Layout — Centered Three Columns
+========================================= */
+
+.site-footer .footer-inner {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  justify-items: center;
+
+  gap: clamp(28px, 4vw, 64px);
+
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 12px 52px;
+
+  box-sizing: border-box;
+}
+
+/* =========================================
+   Brand Section
+========================================= */
+
+.site-footer .footer-brand {
+  width: 100%;
+  max-width: 350px;
+  min-width: 0;
+  text-align: center;
+}
+
+.site-footer .footer-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  margin: 0 0 18px;
+
+  color: #142b4a;
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.2px;
+  text-decoration: none;
+
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+.site-footer .footer-logo span {
+  color: #4f6fe8;
+}
+
+.site-footer .footer-logo:hover {
+  transform: translateY(-2px);
+  color: #2563eb;
+}
+
+.site-footer .footer-tagline {
+  margin: 0 0 16px;
+
+  color: #4770ce;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+.site-footer .footer-brand p {
+  max-width: 330px;
+  margin: 0 auto;
+
+  color: #52647c;
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+/* =========================================
+   Navigation Columns
+========================================= */
+
+.site-footer .footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+
+  min-width: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.site-footer .footer-links h3 {
+  margin: 4px 0 8px;
+
+  color: #142b4a;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.site-footer .footer-links a {
+  position: relative;
+  display: inline-block;
+
+  color: #52647c;
+  font-size: 14px;
+  line-height: 1.6;
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Animated Underline */
+.site-footer .footer-links a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+
+  width: 0;
+  height: 2px;
+
+  border-radius: 2px;
+  background: linear-gradient(90deg, #3b82f6, #14b8a6);
+
+  transition: width 0.25s ease;
+}
+
+/* Link Hover */
+.site-footer .footer-links a:hover {
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.site-footer .footer-links a:hover::before {
+  width: 100%;
+}
+
+/* =========================================
+   Copyright Section
+========================================= */
+
+.site-footer .footer-bottom {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: calc(100% + 48px);
+  margin: 0 -24px;
+
+  min-height: 72px;
+  padding: 18px 20px;
+
+  border-top: 1px solid rgba(100, 116, 139, 0.16);
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-sizing: border-box;
+}
+
+.site-footer .footer-bottom p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   Keyboard Accessibility
+========================================= */
+
+.site-footer .footer-links a:focus-visible,
+.site-footer .footer-logo:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 5px;
+  border-radius: 3px;
+}
+
+/* =========================================
+   Tablet Responsive
+========================================= */
+
+@media (max-width: 900px) {
+  .site-footer {
+    padding-top: 54px;
+  }
+
+  .site-footer .footer-inner {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px;
+    padding: 0 8px 42px;
+  }
+
+  .site-footer .footer-logo {
+    font-size: 27px;
+    margin-bottom: 14px;
+  }
+}
+
+/* =========================================
+   Mobile Responsive
+========================================= */
+
+@media (max-width: 600px) {
+  .site-footer {
+    padding: 42px 16px 0;
+  }
+
+  .site-footer::after {
+    width: 220px;
+    height: 220px;
+    right: -120px;
+    bottom: -130px;
+  }
+
+  .site-footer .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-items: center;
+
+    gap: 32px 22px;
+    padding: 0 4px 32px;
+  }
+
+  .site-footer .footer-brand {
+    grid-column: 1 / -1;
+    max-width: 100%;
+  }
+
+  .site-footer .footer-logo {
+    font-size: 27px;
+    margin-bottom: 12px;
+  }
+
+  .site-footer .footer-tagline {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+  }
+
+  .site-footer .footer-brand p {
+    max-width: 360px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .site-footer .footer-links {
+    gap: 12px;
+  }
+
+  .site-footer .footer-links h3 {
+    margin: 0 0 5px;
+    font-size: 13px;
+  }
+
+  .site-footer .footer-links a {
+    font-size: 13px;
+  }
+
+  .site-footer .footer-bottom {
+    width: calc(100% + 32px);
+    margin: 0 -16px;
+
+    min-height: 66px;
+    padding: 16px;
+  }
+
+  .site-footer .footer-bottom p {
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   Small Mobile Screens
+========================================= */
+
+@media (max-width: 380px) {
+  .site-footer .footer-inner {
+    column-gap: 15px;
+  }
+
+  .site-footer .footer-links a {
+    font-size: 12px;
+  }
+
+  .site-footer .footer-logo {
+    font-size: 25px;
+  }
+}
+
+/* =========================================
+   Reduced Motion Accessibility
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer .footer-logo,
+  .site-footer .footer-links a,
+  .site-footer .footer-links a::before {
+    transition: none;
+  }
+
+  .site-footer .footer-logo:hover,
+  .site-footer .footer-links a:hover {
+    transform: none;
+  }
+}

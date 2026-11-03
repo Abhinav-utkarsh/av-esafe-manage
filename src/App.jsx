@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
@@ -6,16 +5,45 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import { GraduationCap, LoaderCircle } from "lucide-react";
 
 import Login from "./pages/auth/Login";
 import SetPassword from "./pages/auth/SetPassword";
 
+// ==========================================
+// PUBLIC PAGES
+// ==========================================
+
+import Home from "./pages/public/Home";
+import About from "./pages/public/About";
+import Founder from "./pages/public/Founder";
+import OurMentors from "./pages/public/OurMentors";
+
+// ==========================================
+// PUBLIC NAVBAR & FOOTER
+// ==========================================
+
+import Navbar from "./components/public/Navbar";
+import Footer from "./components/public/Footer";
+
+// ==========================================
+// AUTHENTICATION & PROTECTED ROUTES
+// ==========================================
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
+// ==========================================
+// LAYOUTS
+// ==========================================
+
 import AdminLayout from "./layouts/AdminLayout";
+
+// ==========================================
+// ADMIN PAGES
+// ==========================================
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Students from "./pages/admin/Students";
@@ -30,9 +58,35 @@ import AdminManagement from "./pages/admin/AdminManagement";
 import Assessments from "./pages/admin/Assessments";
 import Announcements from "./pages/admin/Announcements";
 
+// ==========================================
+// STUDENT PAGES
+// ==========================================
+
 import StudentDashboard from "./pages/student/StudentDashboard";
 
+// ==========================================
+// CSS
+// ==========================================
+
 import "./components/LoadingScreen.css";
+
+// ==========================================
+// PUBLIC LAYOUT
+// ==========================================
+
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
+  );
+}
+
+// ==========================================
+// APP LOADING SCREEN
+// ==========================================
 
 function AppLoadingScreen() {
   return (
@@ -68,16 +122,19 @@ function AppLoadingScreen() {
   );
 }
 
+// ==========================================
+// APPLICATION ROUTES
+// ==========================================
+
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
 
-  // Keep loading screen visible for at least 3 seconds.
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false);
-    }, 3000);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, []);
@@ -94,46 +151,70 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Root Route */}
+      {/* PUBLIC HOMEPAGE */}
+
       <Route
         path="/"
-        element={
-          user ? (
-            isAdmin ? (
-              <Navigate to="/admin/dashboard" replace />
-            ) : isStudent ? (
-              <Navigate to="/student/dashboard" replace />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
+        element={<Home />}
       />
 
-      {/* Login */}
+      {/* ABOUT US */}
+
+      <Route
+        path="/about"
+        element={<About />}
+      />
+
+      {/* FOUNDER */}
+
+      <Route
+        path="/founder"
+        element={<Founder />}
+      />
+
+      {/* OUR MENTORS */}
+
+      <Route
+        path="/our-mentors"
+        element={<OurMentors />}
+      />
+
+      {/* LOGIN */}
+
       <Route
         path="/login"
         element={
-          user ? (
-            isAdmin ? (
-              <Navigate to="/admin/dashboard" replace />
-            ) : isStudent ? (
-              <Navigate to="/student/dashboard" replace />
+          <PublicLayout>
+            {user ? (
+              isAdmin ? (
+                <Navigate
+                  to="/admin/dashboard"
+                  replace
+                />
+              ) : isStudent ? (
+                <Navigate
+                  to="/student/dashboard"
+                  replace
+                />
+              ) : (
+                <Login />
+              )
             ) : (
               <Login />
-            )
-          ) : (
-            <Login />
-          )
+            )}
+          </PublicLayout>
         }
       />
 
-      {/* Set Password */}
-      <Route path="/set-password" element={<SetPassword />} />
+      {/* SET PASSWORD */}
 
-      {/* Admin Routes */}
+      <Route
+        path="/set-password"
+        element={<SetPassword />}
+      />
+
+      {/* ADMIN ROUTES */}
+
       <Route
         path="/admin"
         element={
@@ -144,30 +225,69 @@ function AppRoutes() {
       >
         <Route
           index
-          element={<Navigate to="/admin/dashboard" replace />}
+          element={
+            <Navigate
+              to="/admin/dashboard"
+              replace
+            />
+          }
         />
 
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="students" element={<Students />} />
-        <Route path="courses" element={<Courses />} />
-        <Route path="bundles" element={<Bundles />} />
-        <Route path="batches" element={<Batches />} />
-        <Route path="enrollments" element={<Enrollments />} />
-        <Route path="payments" element={<Payments />} />
-        <Route path="progress" element={<Progress />} />
+        <Route
+          path="dashboard"
+          element={<AdminDashboard />}
+        />
 
-        {/* Assessments & Results */}
-        <Route path="assessments" element={<Assessments />} />
+        <Route
+          path="students"
+          element={<Students />}
+        />
 
-        {/* Announcements & Approval */}
-        <Route path="announcements" element={<Announcements />} />
+        <Route
+          path="courses"
+          element={<Courses />}
+        />
+
+        <Route
+          path="bundles"
+          element={<Bundles />}
+        />
+
+        <Route
+          path="batches"
+          element={<Batches />}
+        />
+
+        <Route
+          path="enrollments"
+          element={<Enrollments />}
+        />
+
+        <Route
+          path="payments"
+          element={<Payments />}
+        />
+
+        <Route
+          path="progress"
+          element={<Progress />}
+        />
+
+        <Route
+          path="assessments"
+          element={<Assessments />}
+        />
+
+        <Route
+          path="announcements"
+          element={<Announcements />}
+        />
 
         <Route
           path="resolved-queries"
           element={<ResolvedQueries />}
         />
 
-        {/* Super Admin Only */}
         <Route
           path="admin-management"
           element={
@@ -178,7 +298,8 @@ function AppRoutes() {
         />
       </Route>
 
-      {/* Student Routes */}
+      {/* STUDENT ROUTES */}
+
       <Route
         path="/student/dashboard"
         element={
@@ -188,14 +309,64 @@ function AppRoutes() {
         }
       />
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />}
+      {/* FALLBACK ROUTE */}
+
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to="/"
+            replace
+          />
+        }
       />
     </Routes>
   );
 }
 
+// ==========================================
+// ROOT APPLICATION
+// ==========================================
+
 export default function App() {
+  useEffect(() => {
+    const style = document.createElement("style");
+
+    style.id = "av-esafe-hide-scrollbars";
+
+    style.textContent = `
+      html,
+      body,
+      #root,
+      #root * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar,
+      #root::-webkit-scrollbar,
+      #root *::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+      }
+    `;
+
+    document.head.appendChild(style);
+
+    return () => {
+      const existingStyle = document.getElementById(
+        "av-esafe-hide-scrollbars"
+      );
+
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>

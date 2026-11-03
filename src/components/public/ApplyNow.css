@@ -1,0 +1,420 @@
+/* ==========================================
+   APPLY NOW SECTION
+========================================== */
+
+.apply-section {
+  position: relative;
+  overflow: hidden;
+  padding: 100px 7%;
+  background: var(--public-bg, #f8fafc);
+}
+
+.apply-container {
+  position: relative;
+  overflow: hidden;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 90px 50px;
+  border-radius: 35px;
+  background: linear-gradient(
+    135deg,
+    #102a56 0%,
+    #173d78 45%,
+    #2563eb 100%
+  );
+  box-shadow: 0 35px 80px rgba(37, 99, 235, 0.2);
+}
+
+/* ==========================================
+   BACKGROUND DECORATIONS
+========================================== */
+
+.apply-decoration {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.apply-decoration-one {
+  width: 500px;
+  height: 500px;
+  top: -250px;
+  right: -100px;
+  background: rgba(96, 165, 250, 0.12);
+  filter: blur(2px);
+}
+
+.apply-decoration-two {
+  width: 400px;
+  height: 400px;
+  bottom: -250px;
+  left: -100px;
+  background: rgba(147, 197, 253, 0.1);
+  filter: blur(2px);
+}
+
+/* ==========================================
+   FLOATING ICONS
+========================================== */
+
+.apply-floating-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  color: #bfdbfe;
+  animation: apply-float 5s ease-in-out infinite;
+}
+
+.apply-floating-icon-one {
+  top: 70px;
+  left: 80px;
+}
+
+.apply-floating-icon-two {
+  right: 80px;
+  bottom: 70px;
+  animation-delay: 1.5s;
+}
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.apply-content {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+  color: #ffffff;
+}
+
+.apply-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 17px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #bfdbfe;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* ==========================================
+   MAIN ICON
+========================================== */
+
+.apply-main-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin: 35px auto 25px;
+  border-radius: 25px;
+  background: linear-gradient(
+    135deg,
+    #60a5fa,
+    #2563eb
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================
+   HEADING
+========================================== */
+
+.apply-content h2 {
+  margin: 0 0 25px;
+  font-size: clamp(38px, 5.5vw, 65px);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: #ffffff;
+}
+
+.apply-content h2 span {
+  display: block;
+  color: #93c5fd;
+}
+
+.apply-content > p {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.apply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 40px;
+}
+
+.apply-primary-button,
+.apply-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 26px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+}
+
+.apply-primary-button {
+  background: #ffffff;
+  color: #1d4ed8;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.apply-primary-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+}
+
+.apply-primary-button svg {
+  transition: transform 0.3s ease;
+}
+
+.apply-primary-button:hover svg {
+  transform: translateX(5px);
+}
+
+.apply-secondary-button {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.apply-secondary-button:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================
+   BOTTOM NOTE
+========================================== */
+
+.apply-bottom-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 35px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.apply-note-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+/* ==========================================
+   REVEAL ANIMATION
+========================================== */
+
+.apply-reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.apply-reveal.apply-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================
+   FLOAT ANIMATION
+========================================== */
+
+@keyframes apply-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 1024px) {
+  .apply-section {
+    padding: 80px 5%;
+  }
+
+  .apply-container {
+    padding: 80px 35px;
+  }
+
+  .apply-floating-icon-one {
+    left: 35px;
+  }
+
+  .apply-floating-icon-two {
+    right: 35px;
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+  .apply-section {
+    padding: 65px 6%;
+  }
+
+  .apply-container {
+    padding: 70px 30px;
+    border-radius: 28px;
+  }
+
+  .apply-content h2 {
+    font-size: 42px;
+    letter-spacing: -1.2px;
+  }
+
+  .apply-content > p {
+    font-size: 14px;
+  }
+
+  .apply-floating-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+  }
+
+  .apply-floating-icon-one {
+    top: 25px;
+    left: 25px;
+  }
+
+  .apply-floating-icon-two {
+    right: 25px;
+    bottom: 25px;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+  .apply-section {
+    padding: 50px 5%;
+  }
+
+  .apply-container {
+    padding: 65px 20px;
+    border-radius: 24px;
+  }
+
+  .apply-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    padding: 9px 12px;
+  }
+
+  .apply-main-icon {
+    width: 65px;
+    height: 65px;
+    margin: 30px auto 22px;
+    border-radius: 20px;
+  }
+
+  .apply-content h2 {
+    font-size: 34px;
+    letter-spacing: -0.8px;
+  }
+
+  .apply-content > p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .apply-actions {
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 30px;
+  }
+
+  .apply-primary-button,
+  .apply-secondary-button {
+    width: 100%;
+    padding: 15px 18px;
+  }
+
+  .apply-bottom-note {
+    font-size: 10px;
+  }
+
+  .apply-floating-icon-one {
+    top: 15px;
+    left: 15px;
+  }
+
+  .apply-floating-icon-two {
+    right: 15px;
+    bottom: 15px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .apply-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .apply-floating-icon {
+    animation: none;
+  }
+
+  .apply-primary-button,
+  .apply-secondary-button {
+    transition: none;
+  }
+}
