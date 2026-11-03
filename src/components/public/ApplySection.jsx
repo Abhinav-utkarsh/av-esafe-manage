@@ -14,6 +14,8 @@ import {
   IndianRupee,
 } from "lucide-react";
 import "./ApplySection.css";
+import { supabase } from "../../lib/supabaseClient";
+
 
 const DEFAULT_CITIES = [
   "Agra", "Ahmedabad", "Amritsar", "Bengaluru", "Bhopal",
@@ -190,6 +192,7 @@ function ApplySection({
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [emailWarning, setEmailWarning] = useState("");
   const [paymentStep, setPaymentStep] = useState(false);
   const [transactionReference, setTransactionReference] = useState("");
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
@@ -336,6 +339,7 @@ function ApplySection({
 
     setSubmitted(false);
     setErrorMessage("");
+    setEmailWarning("");
     setPaymentStep(false);
     setTransactionReference("");
     setPaymentConfirmed(false);
@@ -381,59 +385,91 @@ function ApplySection({
     setErrorMessage("");
 
     try {
-      const response = await fetch(
-        "https://api.web3forms.com/submit",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            access_key: "b47e9ccd-f83c-403b-96ad-63097d6ff4bb",
-            subject: "New Av_eSAFE Training Application",
-            from_name: "Av_eSAFE Training Website",
+      // First persist the application in Supabase so it is visible to Admin.
+      const applicationRecord = {
+        full_name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        college: formData.college || null,
+        current_city: formData.currentCity || null,
+        current_status: formData.currentStatus || null,
+        goals: formData.goals.trim() || null,
+        interested_track: formData.track,
+        selected_bundle: activeBundle?.title || null,
+        bundle_coding_track: activeBundle ? bundleCodingTrack : null,
+        total_price: totalPrice,
+        payment_method: "UPI QR",
+        transaction_reference: transactionReference.trim(),
+        payment_status: "pending_verification",
+        application_status: "new",
+      };
 
-            "Full Name": formData.fullName.trim(),
-            "Email Address": formData.email.trim(),
-            "Phone Number": formData.phone.trim(),
-            "College / University":
-              formData.college || "Not provided",
-            "Current City":
-              formData.currentCity || "Not provided",
+      const { error: databaseError } = await supabase
+        .from("student_applications")
+        .insert([applicationRecord]);
 
-            // Retain the existing field for compatibility.
-            "Interested Training Track": formData.track,
-
-            // Additional details included in the same API request.
-            "Selected Bundle":
-              activeBundle?.title || "Individual courses",
-            "Bundle Coding Track":
-              activeBundle ? bundleCodingTrack : "Not applicable",
-            "Selected Courses": formData.track,
-            "Total Course Price": formatPrice(totalPrice),
-            "Payment Method": "UPI QR",
-            "UPI Transaction Reference (UTR)": transactionReference.trim(),
-            "Payment Status": "Pending manual verification — verify in bank/UPI account before enrollment",
-
-            "Current Status": formData.currentStatus,
-            "Goals": formData.goals.trim() || "Not provided",
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
+      if (databaseError) {
+        console.error("Supabase application insert error:", databaseError);
         throw new Error(
-          result.message || "Unable to submit your application."
+          databaseError.message ||
+            "Unable to save your application. Please try again."
+        );
+      }
+
+      // Send the email notification after the database save.
+      try {
+        const response = await fetch(
+          "https://api.web3forms.com/submit",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              access_key: "b47e9ccd-f83c-403b-96ad-63097d6ff4bb",
+              subject: "New Av_eSAFE Training Application",
+              from_name: "Av_eSAFE Training Website",
+
+              "Full Name": formData.fullName.trim(),
+              "Email Address": formData.email.trim(),
+              "Phone Number": formData.phone.trim(),
+              "College / University": formData.college || "Not provided",
+              "Current City": formData.currentCity || "Not provided",
+              "Interested Training Track": formData.track,
+              "Selected Bundle": activeBundle?.title || "Individual courses",
+              "Bundle Coding Track": activeBundle
+                ? bundleCodingTrack
+                : "Not applicable",
+              "Selected Courses": formData.track,
+              "Total Course Price": formatPrice(totalPrice),
+              "Payment Method": "UPI QR",
+              "UPI Transaction Reference (UTR)": transactionReference.trim(),
+              "Payment Status":
+                "Pending manual verification — verify in bank/UPI account before enrollment",
+              "Current Status": formData.currentStatus,
+              Goals: formData.goals.trim() || "Not provided",
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || "Email notification could not be sent."
+          );
+        }
+      } catch (emailError) {
+        console.error("Web3Forms notification error:", emailError);
+        setEmailWarning(
+          "Your application was saved successfully. The email notification could not be sent, but your application is recorded for Admin review."
         );
       }
 
       setSubmitted(true);
     } catch (error) {
-      console.error("Web3Forms error:", error);
-
+      console.error("Application submission error:", error);
       setErrorMessage(
         error.message || "Something went wrong. Please try again."
       );
@@ -1168,6 +1204,12 @@ function ApplySection({
                     Our team has received your details and will contact
                     you using the information you provided.
                   </p>
+
+                  {emailWarning && (
+                    <p role="status" aria-live="polite">
+                      {emailWarning}
+                    </p>
+                  )}
 
                   <button
                     className="button button-primary"

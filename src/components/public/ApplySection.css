@@ -408,7 +408,17 @@
   flex: 0 0 auto;
   color: #193454;
 }
+/* Interested Training Track - Full Width */
 
+.application-field:has(.course-picker-trigger) {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.application-field:has(.course-picker-trigger) .course-picker-trigger {
+  width: 100%;
+  max-width: 100%;
+}
 /* =========================================
    Privacy Note
 ========================================= */

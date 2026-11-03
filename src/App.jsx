@@ -58,6 +58,10 @@ import AdminManagement from "./pages/admin/AdminManagement";
 import Assessments from "./pages/admin/Assessments";
 import Announcements from "./pages/admin/Announcements";
 
+// NEW: STUDENT APPLICATIONS
+
+import StudentApplications from "./pages/admin/StudentApplications";
+
 // ==========================================
 // STUDENT PAGES
 // ==========================================
@@ -213,7 +217,9 @@ function AppRoutes() {
         element={<SetPassword />}
       />
 
+      {/* ====================================== */}
       {/* ADMIN ROUTES */}
+      {/* ====================================== */}
 
       <Route
         path="/admin"
@@ -233,60 +239,91 @@ function AppRoutes() {
           }
         />
 
+        {/* ADMIN DASHBOARD */}
+
         <Route
           path="dashboard"
           element={<AdminDashboard />}
         />
+
+        {/* STUDENTS */}
 
         <Route
           path="students"
           element={<Students />}
         />
 
+        {/* NEW: STUDENT APPLICATIONS */}
+
+        <Route
+          path="student-applications"
+          element={<StudentApplications />}
+        />
+
+        {/* COURSES */}
+
         <Route
           path="courses"
           element={<Courses />}
         />
+
+        {/* BUNDLES */}
 
         <Route
           path="bundles"
           element={<Bundles />}
         />
 
+        {/* BATCHES */}
+
         <Route
           path="batches"
           element={<Batches />}
         />
+
+        {/* ENROLLMENTS */}
 
         <Route
           path="enrollments"
           element={<Enrollments />}
         />
 
+        {/* PAYMENTS */}
+
         <Route
           path="payments"
           element={<Payments />}
         />
+
+        {/* PROGRESS */}
 
         <Route
           path="progress"
           element={<Progress />}
         />
 
+        {/* ASSESSMENTS */}
+
         <Route
           path="assessments"
           element={<Assessments />}
         />
+
+        {/* ANNOUNCEMENTS */}
 
         <Route
           path="announcements"
           element={<Announcements />}
         />
 
+        {/* RESOLVED QUERIES */}
+
         <Route
           path="resolved-queries"
           element={<ResolvedQueries />}
         />
+
+        {/* ADMIN MANAGEMENT */}
 
         <Route
           path="admin-management"
@@ -298,7 +335,9 @@ function AppRoutes() {
         />
       </Route>
 
+      {/* ====================================== */}
       {/* STUDENT ROUTES */}
+      {/* ====================================== */}
 
       <Route
         path="/student/dashboard"
@@ -309,7 +348,9 @@ function AppRoutes() {
         }
       />
 
+      {/* ====================================== */}
       {/* FALLBACK ROUTE */}
+      {/* ====================================== */}
 
       <Route
         path="*"

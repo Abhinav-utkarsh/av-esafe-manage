@@ -14,6 +14,7 @@ import {
   ChartNoAxesCombined,
   ClipboardCheck,
   Megaphone,
+  FileText,
   Menu,
   X,
   LogOut,
@@ -36,6 +37,7 @@ import "./AdminLayout.css";
 const menuItems = [
   { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Students", path: "/admin/students", icon: Users },
+  { label: "Student Applications", path: "/admin/student-applications", icon: FileText },
   { label: "Courses", path: "/admin/courses", icon: BookOpen },
   { label: "Bundles", path: "/admin/bundles", icon: Layers },
   { label: "Batches", path: "/admin/batches", icon: CalendarDays },
@@ -63,6 +65,7 @@ export default function AdminLayout() {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [updatingMessageId, setUpdatingMessageId] = useState(null);
+  const [pendingApplicationCount, setPendingApplicationCount] = useState(0);
 
   const notificationRef = useRef(null);
 
@@ -118,6 +121,66 @@ export default function AdminLayout() {
       setLoadingNotifications(false);
     }
   }, []);
+
+  // Load pending student applications for the sidebar badge.
+  const loadPendingApplications = useCallback(async () => {
+    try {
+      // Fetch statuses and count only applications that are not yet reviewed.
+      // Normalize casing/whitespace so values such as "New" are handled too.
+      const { data, error } = await supabase
+        .from("student_applications")
+        .select("application_status");
+
+      if (error) throw error;
+
+      const pendingCount = (data || []).filter((application) => {
+        const status = String(application.application_status || "")
+          .trim()
+          .toLowerCase();
+
+        return status === "new" || status === "pending";
+      }).length;
+
+      setPendingApplicationCount(pendingCount);
+    } catch (error) {
+      console.error("Student application badge loading failed:", error.message);
+    }
+  }, []);
+
+  // Initial load and Realtime updates for new applications.
+  useEffect(() => {
+    loadPendingApplications();
+
+    const channel = supabase
+      .channel("admin-student-application-sidebar-badge")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "student_applications",
+        },
+        () => {
+          loadPendingApplications();
+        }
+      )
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.error("Could not connect to student application notifications.");
+        }
+      });
+
+    // Fallback polling: ensures the badge also updates when Realtime events
+    // are not delivered (for example, after approval through an Edge Function).
+    const refreshInterval = window.setInterval(() => {
+      loadPendingApplications();
+    }, 5000);
+
+    return () => {
+      window.clearInterval(refreshInterval);
+      supabase.removeChannel(channel);
+    };
+  }, [loadPendingApplications]);
 
   // Initial fetch and Realtime subscription.
   useEffect(() => {
@@ -280,7 +343,32 @@ export default function AdminLayout() {
                 title={collapsed ? item.label : ""}
               >
                 <Icon size={19} />
-                {!collapsed && <span>{item.label}</span>}
+                {!collapsed && (
+                  <span className="sidebar-link-label">
+                    {item.label}
+                    {item.path === "/admin/student-applications" &&
+                      pendingApplicationCount > 0 && (
+                        <span
+                          className="student-application-badge"
+                          aria-label={`${pendingApplicationCount} pending student applications`}
+                          title={`${pendingApplicationCount} pending student applications`}
+                        >
+                          {pendingApplicationCount > 99
+                            ? "99+"
+                            : pendingApplicationCount}
+                        </span>
+                      )}
+                  </span>
+                )}
+                {collapsed &&
+                  item.path === "/admin/student-applications" &&
+                  pendingApplicationCount > 0 && (
+                    <span
+                      className="student-application-dot"
+                      aria-label={`${pendingApplicationCount} pending student applications`}
+                      title={`${pendingApplicationCount} pending student applications`}
+                    />
+                  )}
               </NavLink>
             );
           })}
