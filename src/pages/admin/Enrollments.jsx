@@ -37,6 +37,7 @@ export default function Enrollments() {
   const [bundleItems, setBundleItems] = useState([]);
   const [bundleOptions, setBundleOptions] = useState([]);
   const [batches, setBatches] = useState([]);
+  const [studentApplications, setStudentApplications] = useState([]);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -137,7 +138,12 @@ export default function Enrollments() {
           .from("batches")
           .select("id, batch_code, batch_name, course_id, status, start_date, end_date")
           .in("status", ["upcoming", "ongoing"])
-          .order("start_date")
+          .order("start_date"),
+
+        supabase
+          .from("student_applications")
+          .select("id, full_name, email, interested_track, selected_bundle, bundle_coding_track, total_price, payment_status, application_status, created_at")
+          .order("created_at", { ascending: false })
       ]);
 
       const failed = results.find((result) => result.error);
@@ -150,7 +156,8 @@ export default function Enrollments() {
         bundleResult,
         bundleItemResult,
         bundleOptionResult,
-        batchResult
+        batchResult,
+        applicationResult
       ] = results;
 
       setEnrollments(enrollmentResult.data || []);
@@ -160,6 +167,7 @@ export default function Enrollments() {
       setBundleItems(bundleItemResult.data || []);
       setBundleOptions(bundleOptionResult.data || []);
       setBatches(batchResult.data || []);
+      setStudentApplications(applicationResult.data || []);
     } catch (err) {
       console.error("Enrollment loading error:", err);
       setError(err.message || "Unable to load enrollment information.");
@@ -283,6 +291,118 @@ export default function Enrollments() {
       ...previous,
       [name]: value
     }));
+  };
+
+  
+const normalizeCourseName = (value) =>
+  String(value || "")
+    .toLowerCase()
+    // Make "and" equivalent to "&"
+    .replace(/\band\b/g, "")
+    // Remove spaces and special characters
+    .replace(/[^a-z0-9]/g, "");
+
+
+  const handleStudentChange = (studentId) => {
+    const student = students.find((item) => item.id === studentId);
+    if (!student) {
+      updateForm("student_id", studentId);
+      return;
+    }
+
+    const normalizedStudentEmail = String(student.email || "")
+      .trim()
+      .toLowerCase();
+
+    // Always use the newest application for this email, even when the
+    // newest application is still pending verification or approval.
+    const application = [...studentApplications]
+      .filter((item) =>
+        String(item.email || "").trim().toLowerCase() === normalizedStudentEmail
+      )
+      .sort((a, b) =>
+        new Date(b.created_at || 0).getTime() -
+        new Date(a.created_at || 0).getTime()
+      )[0];
+
+    // No public application found: retain the standard manual enrollment flow.
+    if (!application) {
+      setForm((previous) => ({ ...previous, student_id: studentId }));
+      return;
+    }
+
+    const applicationBundleName = application.selected_bundle?.trim();
+    const matchedBundle = applicationBundleName
+      ? bundles.find((bundle) =>
+          normalizeCourseName(bundle.title) === normalizeCourseName(applicationBundleName)
+        )
+      : null;
+
+    if (matchedBundle) {
+      const technicalCourse = courses.find((course) =>
+        normalizeCourseName(course.title) === normalizeCourseName(application.bundle_coding_track)
+      );
+
+      setForm((previous) => ({
+        ...previous,
+        student_id: studentId,
+        enrollment_type: "bundle",
+        course_ids: [],
+        bundle_id: matchedBundle.id,
+        technical_track_course_id: technicalCourse?.id || "",
+        total_fee: String(application.total_price ?? matchedBundle.price ?? 0),
+        batchAssignments: {}
+      }));
+      setError("");
+      return;
+    }
+
+    const applicationTracks = String(application.interested_track || "")
+      .split(",")
+      .map((track) => track.trim())
+      .filter(Boolean);
+
+    
+const matchedCourseIds = courses
+  .filter((course) =>
+    applicationTracks.some((track) => {
+      const normalizedTrack = normalizeCourseName(track);
+      const normalizedCourse = normalizeCourseName(course.title);
+
+      // Exact match
+      if (normalizedTrack === normalizedCourse) {
+        return true;
+      }
+
+      // Handle SQL and Database vs SQL & Database Management
+      if (
+        normalizedTrack === "sqldatabase" &&
+        normalizedCourse === "sqldatabasemanagement"
+      ) {
+        return true;
+      }
+
+      return false;
+    })
+  )
+  .map((course) => course.id);
+
+
+    const matchedTotal = courses
+      .filter((course) => matchedCourseIds.includes(course.id))
+      .reduce((sum, course) => sum + Number(course.price || 0), 0);
+
+    setForm((previous) => ({
+      ...previous,
+      student_id: studentId,
+      enrollment_type: "individual",
+      course_ids: matchedCourseIds,
+      bundle_id: "",
+      technical_track_course_id: "",
+      total_fee: String(application.total_price ?? matchedTotal),
+      batchAssignments: {}
+    }));
+    setError("");
   };
 
   const openAddModal = () => {
@@ -934,7 +1054,7 @@ export default function Enrollments() {
               <div className="enrollment-form-grid">
                 <label className="enrollment-full-field">
                   Select Active Student *
-                  <select value={form.student_id} onChange={(event) => updateForm("student_id", event.target.value)} required>
+                  <select value={form.student_id} onChange={(event) => handleStudentChange(event.target.value)} required>
                     <option value="">Choose an active student</option>
                     {students.map((student) => (
                       <option key={student.id} value={student.id}>

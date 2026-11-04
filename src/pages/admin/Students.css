@@ -998,3 +998,264 @@
     min-width: 190px;
   }
 }
+
+
+/* =========================================================
+   CONSISTENT BUTTON ANIMATION - STUDENTS PAGE
+   Added after all page-specific styles to prevent overrides.
+========================================================= */
+
+.students-page .add-student-button,
+.students-page .students-refresh,
+.students-page .student-action-button,
+.students-page .student-modal-actions button,
+.students-page .students-error button,
+.students-page .students-success button,
+.students-page .student-action-modal-footer button {
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+    box-shadow 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    opacity 220ms ease !important;
+  transform: translateY(0);
+}
+
+/* Hover animation: gentle lift and soft shadow */
+.students-page .add-student-button:hover,
+.students-page .students-refresh:hover,
+.students-page .student-action-button:hover,
+.students-page .student-modal-actions button:hover,
+.students-page .students-error button:hover,
+.students-page .students-success button:hover,
+.students-page .student-action-modal-footer button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Press animation */
+.students-page .add-student-button:active,
+.students-page .students-refresh:active,
+.students-page .student-action-button:active,
+.students-page .student-modal-actions button:active,
+.students-page .students-error button:active,
+.students-page .students-success button:active,
+.students-page .student-action-modal-footer button:active {
+  transform: translateY(0) scale(0.97) !important;
+  box-shadow: none !important;
+}
+
+/* Disabled buttons should not animate */
+.students-page button:disabled {
+  transform: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Visible keyboard focus */
+.students-page button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* Honor reduced-motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .students-page .add-student-button,
+  .students-page .students-refresh,
+  .students-page .student-action-button,
+  .students-page .student-modal-actions button,
+  .students-page .students-error button,
+  .students-page .students-success button,
+  .students-page .student-action-modal-footer button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* =========================================
+   STUDENT PAGE - CONSISTENT BUTTON DESIGN
+========================================= */
+
+/* Add Student */
+.students-page .add-student-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  min-height: 42px;
+
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+
+  border: 1px solid #2563eb;
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+/* Refresh */
+.students-page .students-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  border: 1px solid #dbeafe;
+  border-radius: 9px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+/* All student action buttons */
+.students-page .student-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 36px;
+  padding: 8px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+/* Edit - Blue theme */
+.students-page .student-action-button.edit {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #dbeafe;
+}
+
+/* Deactivate - Orange theme */
+.students-page .student-action-button.deactivate {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+/* Reactivate - Green theme */
+.students-page .student-action-button.reactivate {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
+/* Delete - Red theme */
+.students-page .student-action-button.delete {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+/* Hover animation */
+.students-page .add-student-button:hover,
+.students-page .students-refresh:hover,
+.students-page .student-action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.15);
+}
+
+/* Hover colors */
+.students-page .add-student-button:hover {
+  background: #1d4ed8;
+}
+
+.students-page .student-action-button.edit:hover {
+  background: #dbeafe;
+}
+
+.students-page .student-action-button.deactivate:hover {
+  background: #fef3c7;
+}
+
+.students-page .student-action-button.reactivate:hover {
+  background: #d1fae5;
+}
+
+.students-page .student-action-button.delete:hover {
+  background: #fee2e2;
+}
+
+/* Click animation */
+.students-page .add-student-button:active,
+.students-page .students-refresh:active,
+.students-page .student-action-button:active {
+  transform: scale(0.96);
+}
+
+/* Disabled */
+.students-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+/* Student Action Modal - Cancel Button */
+.student-cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 100px;
+  height: 40px;
+  padding: 0 18px;
+
+  background: #ffffff;
+  color: #475569;
+
+  border: 1px solid #dbe3ef;
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.student-cancel-button:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #1e293b;
+  transform: translateY(-1px);
+}
+
+.student-cancel-button:active {
+  transform: scale(0.97);
+}
+.student-action-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+}

@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -6,6 +5,7 @@ import {
   Search,
   RefreshCw,
   UserPlus,
+  Pencil,
   Mail,
   Phone,
   GraduationCap,
@@ -17,6 +17,7 @@ import {
   ShieldBan,
   ShieldCheck,
   Trash2,
+  Clock,
   AlertTriangle,
   Eye,
   EyeOff,
@@ -24,7 +25,10 @@ import {
 } from "lucide-react";
 
 import { supabase } from "../../lib/supabaseClient";
+
 import "./Students.css";
+
+const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
 
 export default function Students() {
   const [students, setStudents] = useState([]);
@@ -33,6 +37,7 @@ export default function Students() {
   const [error, setError] = useState("");
 
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
   const [creatingStudent, setCreatingStudent] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -53,7 +58,6 @@ export default function Students() {
   const [processingAction, setProcessingAction] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  // Load students.
   const fetchStudents = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -84,7 +88,6 @@ export default function Students() {
     fetchStudents();
   }, [fetchStudents]);
 
-  // Form handling.
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -114,10 +117,28 @@ export default function Students() {
     if (creatingStudent) return;
 
     setShowAddModal(false);
+    setEditingStudent(null);
     resetForm();
   };
 
-  // Create student without sending an invitation email.
+  const openEditModal = (student) => {
+    setSuccessMessage("");
+    setFormError("");
+    setEditingStudent(student);
+
+    setFormData({
+      full_name: student.full_name || "",
+      email: student.email || "",
+      phone: student.phone || "",
+      password: "",
+      confirm_password: ""
+    });
+
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setShowAddModal(true);
+  };
+
   const handleCreateStudent = async (e) => {
     e.preventDefault();
 
@@ -130,10 +151,23 @@ export default function Students() {
     const password = formData.password;
     const confirmPassword = formData.confirm_password;
 
-    if (!fullName || !email || !password || !confirmPassword) {
-      setFormError(
-        "Please complete the name, email and both password fields."
-      );
+    if (!fullName || !email) {
+      setFormError("Please complete the name and email address.");
+      return;
+    }
+
+    if (!editingStudent && (!password || !confirmPassword)) {
+      setFormError("Please complete both password fields.");
+      return;
+    }
+
+    if (editingStudent && password && !confirmPassword) {
+      setFormError("Please confirm the new password.");
+      return;
+    }
+
+    if (editingStudent && !password && confirmPassword) {
+      setFormError("Enter the new password first.");
       return;
     }
 
@@ -144,12 +178,12 @@ export default function Students() {
       return;
     }
 
-    if (password.length < 8) {
+    if (password && password.length < 8) {
       setFormError("Password must contain at least 8 characters.");
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (password && password !== confirmPassword) {
       setFormError("Password and Confirm Password do not match.");
       return;
     }
@@ -157,6 +191,60 @@ export default function Students() {
     setCreatingStudent(true);
 
     try {
+      if (editingStudent) {
+        const { data, error } = await supabase.functions.invoke(
+          "update-student-account",
+          {
+            body: {
+              studentId: editingStudent.id,
+              fullName,
+              email,
+              phone,
+              password: password || null
+            }
+          }
+        );
+
+        if (error) {
+          let message =
+            error.message || "Unable to update student account.";
+
+          try {
+            const response = error.context;
+
+            if (response && typeof response.json === "function") {
+              const responseBody = await response.json();
+
+              if (responseBody?.error) {
+                message = responseBody.error;
+              }
+            }
+          } catch {
+            // Retain the original error message.
+          }
+
+          throw new Error(message);
+        }
+
+        if (!data?.success) {
+          throw new Error(
+            data?.error || "Student account could not be updated."
+          );
+        }
+
+        setSuccessMessage(
+          `Student account updated successfully for ${email}${password ? ". Password changed." : "."
+          }`
+        );
+
+        setShowAddModal(false);
+        setEditingStudent(null);
+        resetForm();
+
+        await fetchStudents();
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke(
         "create-student",
         {
@@ -185,7 +273,7 @@ export default function Students() {
             }
           }
         } catch {
-          // Keep original error.
+          // Keep the original error message.
         }
 
         throw new Error(message);
@@ -198,10 +286,11 @@ export default function Students() {
       }
 
       setSuccessMessage(
-        `Student account created successfully for ${email}. No invitation email was sent. Share the login credentials securely.`
+        `Student account created successfully for ${email}. No invitation email was sent. Share the login credentials with the student securely.`
       );
 
       setShowAddModal(false);
+      setEditingStudent(null);
       resetForm();
 
       await fetchStudents();
@@ -210,14 +299,53 @@ export default function Students() {
 
       setFormError(
         err.message ||
-          "Unable to create student account. Please try again."
+        "Unable to create student account. Please try again."
       );
     } finally {
       setCreatingStudent(false);
     }
   };
 
-  // Search.
+  // Calculate the remaining reactivation/deletion waiting period.
+  const getAccountTiming = (student) => {
+    if (
+      student.account_status !== "deactivated" ||
+      !student.deactivated_at
+    ) {
+      return {
+        remainingMs: 0,
+        remainingDays: 0,
+        canReactivate: false,
+        canDelete: false
+      };
+    }
+
+    const deactivatedTime = new Date(
+      student.deactivated_at
+    ).getTime();
+
+    if (Number.isNaN(deactivatedTime)) {
+      return {
+        remainingMs: TEN_DAYS_MS,
+        remainingDays: 10,
+        canReactivate: false,
+        canDelete: false
+      };
+    }
+
+    const elapsed = Date.now() - deactivatedTime;
+    const remainingMs = Math.max(0, TEN_DAYS_MS - elapsed);
+
+    return {
+      remainingMs,
+      remainingDays: Math.ceil(
+        remainingMs / (24 * 60 * 60 * 1000)
+      ),
+      canReactivate: elapsed < TEN_DAYS_MS,
+      canDelete: elapsed >= TEN_DAYS_MS
+    };
+  };
+
   const filteredStudents = useMemo(() => {
     const query = search.toLowerCase().trim();
 
@@ -236,12 +364,10 @@ export default function Students() {
 
   const deactivatedStudents = students.length - activeStudents;
 
-  // Open action confirmation.
   const openActionModal = (student, action) => {
     setActionError("");
     setSelectedAction({ student, action });
   };
-
   const closeActionModal = () => {
     if (processingAction) return;
 
@@ -249,7 +375,7 @@ export default function Students() {
     setActionError("");
   };
 
-  // Manage student account using the Edge Function.
+  // Call the secure Supabase Edge Function.
   const handleStudentAction = async () => {
     if (!selectedAction || processingAction) return;
 
@@ -265,7 +391,7 @@ export default function Students() {
         {
           body: {
             studentId: student.id,
-            action
+            action: action
           }
         }
       );
@@ -285,7 +411,7 @@ export default function Students() {
             }
           }
         } catch {
-          // Keep original error.
+          // Keep the original error message.
         }
 
         throw new Error(message);
@@ -298,9 +424,9 @@ export default function Students() {
       }
 
       const messages = {
-        deactivate: `${student.full_name}'s account was successfully deactivated.`,
-        reactivate: `${student.full_name}'s account was successfully reactivated.`,
-        delete: `${student.full_name}'s account was permanently deleted.`
+        deactivate: `${student.full_name} has been deactivated. The account can be reactivated within 10 days.`,
+        reactivate: `${student.full_name}'s account has been reactivated.`,
+        delete: `${student.full_name}'s account has been permanently deleted.`
       };
 
       setSelectedAction(null);
@@ -318,7 +444,6 @@ export default function Students() {
     }
   };
 
-  // Confirmation modal content.
   const getActionDetails = () => {
     if (!selectedAction) return null;
 
@@ -328,12 +453,11 @@ export default function Students() {
       deactivate: {
         title: "Deactivate Student?",
         description:
-          "This student will immediately lose access to Av_eSAFE Academy. You can reactivate this account later.",
+          "This student will immediately lose access to Av_eSAFE Academy. You can reactivate the account within the next 10 days.",
         button: "Deactivate Account",
         icon: ShieldBan,
         className: "danger"
       },
-
       reactivate: {
         title: "Reactivate Student?",
         description:
@@ -342,11 +466,10 @@ export default function Students() {
         icon: ShieldCheck,
         className: "success"
       },
-
       delete: {
         title: "Permanently Delete Student?",
         description:
-          "This permanently removes the student's authentication account and profile. This action cannot be undone.",
+          "This permanently removes the student's authentication account and profile. This action cannot be undone. Students with enrollment history are protected by the backend.",
         button: "Delete Permanently",
         icon: Trash2,
         className: "danger"
@@ -380,6 +503,8 @@ export default function Students() {
           onClick={() => {
             setSuccessMessage("");
             setFormError("");
+            setEditingStudent(null);
+            resetForm();
             setShowAddModal(true);
           }}
         >
@@ -506,6 +631,8 @@ export default function Students() {
                   const isDeactivated =
                     student.account_status === "deactivated";
 
+                  const timing = getAccountTiming(student);
+
                   return (
                     <tr key={student.id}>
                       <td>
@@ -539,16 +666,26 @@ export default function Students() {
                       <td>
                         {student.created_at
                           ? new Date(
-                              student.created_at
-                            ).toLocaleDateString("en-IN")
+                            student.created_at
+                          ).toLocaleDateString("en-IN")
                           : "—"}
                       </td>
 
                       <td>
                         {isDeactivated ? (
-                          <span className="student-status deactivated">
-                            Deactivated
-                          </span>
+                          <div className="student-status-wrapper">
+                            <span className="student-status deactivated">
+                              Deactivated
+                            </span>
+
+                            {timing.remainingMs > 0 ? (
+                              <small>
+                                {timing.remainingDays} day(s) left
+                              </small>
+                            ) : (
+                              <small>10-day period completed</small>
+                            )}
+                          </div>
                         ) : (
                           <span className="student-status">
                             Active
@@ -556,46 +693,50 @@ export default function Students() {
                         )}
                       </td>
 
-                      {/* BOTH ACTIONS AVAILABLE */}
                       <td>
                         <div className="student-account-actions">
 
+                          {/* EDIT BUTTON */}
+                          <button
+                            type="button"
+                            className="student-action-button edit"
+                            onClick={() => openEditModal(student)}
+                            title="Edit student details or password"
+                          >
+                            <Pencil size={15} />
+                          </button>
+
+                          {/* DEACTIVATE / REACTIVATE BUTTON */}
                           {!isDeactivated ? (
                             <button
                               type="button"
                               className="student-action-button deactivate"
-                              onClick={() =>
-                                openActionModal(student, "deactivate")
-                              }
+                              onClick={() => openActionModal(student, "deactivate")}
                               title="Deactivate student"
                             >
                               <ShieldBan size={15} />
-                              Deactivate
                             </button>
                           ) : (
-                            <button
-                              type="button"
-                              className="student-action-button reactivate"
-                              onClick={() =>
-                                openActionModal(student, "reactivate")
-                              }
-                              title="Reactivate student"
-                            >
-                              <ShieldCheck size={15} />
-                              Reactivate
-                            </button>
+                            timing.canReactivate && (
+                              <button
+                                type="button"
+                                className="student-action-button reactivate"
+                                onClick={() => openActionModal(student, "reactivate")}
+                                title="Reactivate student"
+                              >
+                                <ShieldCheck size={15} />
+                              </button>
+                            )
                           )}
 
+                          {/* DELETE BUTTON */}
                           <button
                             type="button"
                             className="student-action-button delete"
-                            onClick={() =>
-                              openActionModal(student, "delete")
-                            }
+                            onClick={() => openActionModal(student, "delete")}
                             title="Permanently delete student"
                           >
                             <Trash2 size={15} />
-                            Delete
                           </button>
 
                         </div>
@@ -635,8 +776,7 @@ export default function Students() {
         </div>
 
       </div>
-
-      {/* ADD STUDENT MODAL */}
+      {/* ADD / EDIT STUDENT MODAL */}
       {showAddModal && (
         <div
           className="student-modal-overlay"
@@ -659,9 +799,16 @@ export default function Students() {
                 </div>
 
                 <div>
-                  <h2 id="add-student-title">Add New Student</h2>
+                  <h2 id="add-student-title">
+                    {editingStudent
+                      ? "Edit Student"
+                      : "Add New Student"}
+                  </h2>
+
                   <p>
-                    Create a student account with login credentials.
+                    {editingStudent
+                      ? "Update student details or set a new login password. Leave password blank to keep the current one."
+                      : "Create a student account with login credentials."}
                   </p>
                 </div>
               </div>
@@ -688,6 +835,7 @@ export default function Students() {
 
                 <div className="student-form-input">
                   <User size={17} />
+
                   <input
                     id="student-full-name"
                     type="text"
@@ -708,6 +856,7 @@ export default function Students() {
 
                 <div className="student-form-input">
                   <Mail size={17} />
+
                   <input
                     id="student-email"
                     type="email"
@@ -717,6 +866,12 @@ export default function Students() {
                     onChange={handleInputChange}
                     maxLength={254}
                     required
+                    readOnly={Boolean(editingStudent)}
+                    title={
+                      editingStudent
+                        ? "Email address cannot be changed"
+                        : undefined
+                    }
                   />
                 </div>
               </div>
@@ -728,6 +883,7 @@ export default function Students() {
 
                 <div className="student-form-input">
                   <Phone size={17} />
+
                   <input
                     id="student-phone"
                     type="tel"
@@ -742,53 +898,75 @@ export default function Students() {
 
               <div className="student-form-field">
                 <label htmlFor="student-password">
-                  Password <span>*</span>
+                  Password{" "}
+                  {editingStudent ? "(optional)" : <span>*</span>}
                 </label>
 
                 <div className="student-form-input student-password-input">
                   <KeyRound size={17} />
+
                   <input
                     id="student-password"
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Create a password (minimum 8 characters)"
+                    placeholder={
+                      editingStudent
+                        ? "Enter new password (leave blank to keep current)"
+                        : "Create a password (minimum 8 characters)"
+                    }
                     value={formData.password}
                     onChange={handleInputChange}
                     minLength={8}
                     autoComplete="new-password"
-                    required
+                    required={!editingStudent}
                   />
 
                   <button
                     type="button"
                     className="student-password-toggle"
-                    onClick={() => setShowPassword((value) => !value)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() =>
+                      setShowPassword((value) => !value)
+                    }
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
-                    {showPassword
-                      ? <EyeOff size={17} />
-                      : <Eye size={17} />}
+                    {showPassword ? (
+                      <EyeOff size={17} />
+                    ) : (
+                      <Eye size={17} />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="student-form-field">
                 <label htmlFor="student-confirm-password">
-                  Confirm Password <span>*</span>
+                  Confirm Password{" "}
+                  {editingStudent
+                    ? "(if changing password)"
+                    : <span>*</span>}
                 </label>
 
                 <div className="student-form-input student-password-input">
                   <KeyRound size={17} />
+
                   <input
                     id="student-confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={
+                      showConfirmPassword ? "text" : "password"
+                    }
                     name="confirm_password"
-                    placeholder="Re-enter the password"
+                    placeholder={
+                      editingStudent
+                        ? "Confirm new password"
+                        : "Re-enter the password"
+                    }
                     value={formData.confirm_password}
                     onChange={handleInputChange}
                     minLength={8}
                     autoComplete="new-password"
-                    required
+                    required={!editingStudent}
                   />
 
                   <button
@@ -798,22 +976,27 @@ export default function Students() {
                       setShowConfirmPassword((value) => !value)
                     }
                     aria-label={
-                      showConfirmPassword ? "Hide password" : "Show password"
+                      showConfirmPassword
+                        ? "Hide password"
+                        : "Show password"
                     }
                   >
-                    {showConfirmPassword
-                      ? <EyeOff size={17} />
-                      : <Eye size={17} />}
+                    {showConfirmPassword ? (
+                      <EyeOff size={17} />
+                    ) : (
+                      <Eye size={17} />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="student-invitation-note">
                 <ShieldCheck size={18} />
+
                 <p>
-                  The account will be created immediately without sending an
-                  invitation email. Share the student's email and password
-                  securely. The student can use these credentials to sign in.
+                  {editingStudent
+                    ? "Student account details are updated securely. A new password is applied only when you enter one."
+                    : "The account will be created immediately without sending an invitation email. Share the student's email and password securely."}
                 </p>
               </div>
 
@@ -845,12 +1028,18 @@ export default function Students() {
                         size={17}
                         className="refresh-spinning"
                       />
-                      Creating...
+
+                      {editingStudent
+                        ? "Updating..."
+                        : "Creating..."}
                     </>
                   ) : (
                     <>
                       <Send size={17} />
-                      Create Student
+
+                      {editingStudent
+                        ? "Update Student"
+                        : "Create Student"}
                     </>
                   )}
                 </button>
@@ -909,18 +1098,23 @@ export default function Students() {
                 </div>
 
                 <div>
-                  <strong>{actionDetails.student.full_name}</strong>
-                  <span>{actionDetails.student.email}</span>
+                  <strong>
+                    {actionDetails.student.full_name}
+                  </strong>
+
+                  <span>
+                    {actionDetails.student.email}
+                  </span>
                 </div>
               </div>
 
               {actionDetails.action === "delete" && (
                 <div className="student-delete-warning">
                   <AlertTriangle size={17} />
+
                   <span>
-                    This action is permanent and cannot be undone.
-                    Deletion will be blocked if the student has enrollment
-                    history or protected messages.
+                    This action is permanent. Deletion will also be
+                    blocked if the student has enrollment history.
                   </span>
                 </div>
               )}
@@ -955,6 +1149,7 @@ export default function Students() {
                       size={16}
                       className="refresh-spinning"
                     />
+
                     Processing...
                   </>
                 ) : (

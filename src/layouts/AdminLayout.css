@@ -818,3 +818,44 @@
 .sidebar-link {
   position: relative;
 }
+/* Sidebar Brand */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 20px !important;
+  height: 76px;
+  overflow: hidden;
+}
+
+/* Expanded Logo */
+.sidebar-brand-image {
+  width: 210px;
+  height: 65px;
+  object-fit: contain;
+  object-position: left center;
+  flex-shrink: 0;
+}
+
+/* Collapsed Sidebar Brand */
+.sidebar.collapsed .sidebar-brand {
+  padding: 12px 10px !important;
+  justify-content: flex-start !important;
+}
+
+/* Collapsed Logo */
+.sidebar.collapsed .sidebar-brand-image {
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain;
+}
+/* Expanded sidebar - logo left padding */
+.sidebar:not(.collapsed) .sidebar-brand {
+  padding-left: 20px !important;
+  padding-right: 0 !important;
+  justify-content: flex-start !important;
+}
+
+.sidebar:not(.collapsed) .sidebar-brand-image {
+  margin-left: 0 !important;
+}

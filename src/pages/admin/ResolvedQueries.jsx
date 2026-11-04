@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from "react";
 import {
   MessageCircle,
@@ -8,8 +7,7 @@ import {
   CheckCircle2,
   CalendarDays,
   Mail,
-  User,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 
 import { supabase } from "../../lib/supabaseClient";
@@ -22,6 +20,46 @@ export default function ResolvedQueries() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
 
+  const [userRole, setUserRole] = useState(null);
+  const [roleLoading, setRoleLoading] = useState(true);
+
+  const isSuperAdmin = userRole === "super_admin";
+
+  // FETCH LOGGED-IN USER ROLE
+  const loadUserRole = useCallback(async () => {
+    setRoleLoading(true);
+
+    try {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!user) {
+        setUserRole(null);
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      setUserRole(profile?.role || null);
+    } catch (err) {
+      console.error("User role loading failed:", err.message);
+      setUserRole(null);
+    } finally {
+      setRoleLoading(false);
+    }
+  }, []);
+
+  // LOAD RESOLVED MESSAGES
   const loadResolvedMessages = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -36,7 +74,7 @@ export default function ResolvedQueries() {
       if (messageError) throw messageError;
 
       const studentIds = [
-        ...new Set((messageData || []).map((item) => item.student_id))
+        ...new Set((messageData || []).map((item) => item.student_id)),
       ];
 
       let profilesById = {};
@@ -56,7 +94,7 @@ export default function ResolvedQueries() {
 
       const formattedMessages = (messageData || []).map((item) => ({
         ...item,
-        student: profilesById[item.student_id] || null
+        student: profilesById[item.student_id] || null,
       }));
 
       setMessages(formattedMessages);
@@ -68,7 +106,9 @@ export default function ResolvedQueries() {
     }
   }, []);
 
+  // INITIAL LOAD AND REAL-TIME SUBSCRIPTION
   useEffect(() => {
+    loadUserRole();
     loadResolvedMessages();
 
     const channel = supabase
@@ -78,7 +118,7 @@ export default function ResolvedQueries() {
         {
           event: "*",
           schema: "public",
-          table: "student_messages"
+          table: "student_messages",
         },
         () => {
           loadResolvedMessages();
@@ -89,9 +129,16 @@ export default function ResolvedQueries() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [loadResolvedMessages]);
+  }, [loadUserRole, loadResolvedMessages]);
 
+  // DELETE RESOLVED MESSAGE - SUPER ADMIN ONLY
   const handleDelete = async (message) => {
+    // Frontend authorization check
+    if (!isSuperAdmin) {
+      setError("Only Super Admin can delete resolved messages.");
+      return;
+    }
+
     const studentName = message.student?.full_name || "this student";
 
     const confirmed = window.confirm(
@@ -111,11 +158,13 @@ export default function ResolvedQueries() {
         .eq("status", "resolved")
         .select("id");
 
-      if (deleteError) throw deleteError;
+      if (deleteError) {
+        throw new Error(deleteError.message);
+      }
 
       if (!data || data.length === 0) {
         throw new Error(
-          "The message was not deleted. Please check your Admin permissions."
+          "No message was deleted. Verify that your Supabase DELETE policy allows Super Admin to delete resolved messages."
         );
       }
 
@@ -123,13 +172,14 @@ export default function ResolvedQueries() {
         previous.filter((item) => item.id !== message.id)
       );
     } catch (err) {
-      console.error("Message deletion failed:", err.message);
+      console.error("Message deletion failed:", err);
       setError(err.message || "Unable to delete this message.");
     } finally {
       setDeletingId(null);
     }
   };
 
+  // SEARCH FILTER
   const filteredMessages = messages.filter((item) => {
     const search = searchTerm.trim().toLowerCase();
 
@@ -137,14 +187,16 @@ export default function ResolvedQueries() {
 
     const studentName = item.student?.full_name || "";
     const studentEmail = item.student?.email || "";
+    const messageText = item.message || "";
 
     return (
       studentName.toLowerCase().includes(search) ||
       studentEmail.toLowerCase().includes(search) ||
-      item.message.toLowerCase().includes(search)
+      messageText.toLowerCase().includes(search)
     );
   });
 
+  // FORMAT DATE
   const formatDate = (dateValue) => {
     if (!dateValue) return "Date unavailable";
 
@@ -153,13 +205,12 @@ export default function ResolvedQueries() {
       month: "short",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   };
 
   return (
     <div className="resolved-queries-page">
-
       {/* PAGE HEADER */}
       <div className="resolved-page-header">
         <div>
@@ -179,8 +230,11 @@ export default function ResolvedQueries() {
 
         <button
           className="resolved-refresh-button"
-          onClick={loadResolvedMessages}
-          disabled={loading}
+          onClick={() => {
+            loadResolvedMessages();
+            loadUserRole();
+          }}
+          disabled={loading || roleLoading}
         >
           <RefreshCw
             size={17}
@@ -224,7 +278,6 @@ export default function ResolvedQueries() {
 
       {/* MESSAGES */}
       <div className="resolved-messages-section">
-
         <div className="resolved-section-header">
           <div>
             <h2>Archived Messages</h2>
@@ -258,15 +311,12 @@ export default function ResolvedQueries() {
           </div>
         ) : (
           <div className="resolved-message-list">
-
             {filteredMessages.map((item) => (
               <article
                 className="resolved-message-card"
                 key={item.id}
               >
-
                 <div className="resolved-message-card-header">
-
                   <div className="resolved-student-info">
                     <div className="resolved-student-avatar">
                       {(item.student?.full_name || "S")
@@ -281,6 +331,7 @@ export default function ResolvedQueries() {
 
                       <div className="resolved-student-email">
                         <Mail size={13} />
+
                         <span>
                           {item.student?.email || "Email unavailable"}
                         </span>
@@ -292,7 +343,6 @@ export default function ResolvedQueries() {
                     <CheckCircle2 size={13} />
                     Resolved
                   </span>
-
                 </div>
 
                 <div className="resolved-message-content">
@@ -300,34 +350,38 @@ export default function ResolvedQueries() {
                 </div>
 
                 <div className="resolved-message-footer">
-
                   <div className="resolved-message-date">
                     <CalendarDays size={14} />
                     <span>{formatDate(item.created_at)}</span>
                   </div>
 
-                  <button
-                    className="resolved-delete-button"
-                    onClick={() => handleDelete(item)}
-                    disabled={deletingId === item.id}
-                  >
-                    {deletingId === item.id ? (
-                      <RefreshCw size={15} className="resolved-spinning" />
-                    ) : (
-                      <Trash2 size={15} />
-                    )}
+                  {/* DELETE BUTTON - SUPER ADMIN ONLY */}
+                  {!roleLoading && isSuperAdmin && (
+                    <button
+                      className="resolved-delete-button"
+                      onClick={() => handleDelete(item)}
+                      disabled={deletingId === item.id}
+                      title="Delete resolved message"
+                    >
+                      {deletingId === item.id ? (
+                        <RefreshCw
+                          size={15}
+                          className="resolved-spinning"
+                        />
+                      ) : (
+                        <Trash2 size={15} />
+                      )}
 
-                    {deletingId === item.id ? "Deleting..." : "Delete"}
-                  </button>
-
+                      {deletingId === item.id
+                        ? "Deleting..."
+                        : "Delete"}
+                    </button>
+                  )}
                 </div>
-
               </article>
             ))}
-
           </div>
         )}
-
       </div>
     </div>
   );

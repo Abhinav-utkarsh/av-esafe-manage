@@ -6,8 +6,6 @@ import {
   Eye,
   CheckCircle2,
   XCircle,
-  Clock3,
-  IndianRupee,
   Users,
   X,
   AlertTriangle,
@@ -16,12 +14,6 @@ import {
 
 import { supabase } from "../../lib/supabaseClient";
 import "./StudentApplications.css";
-
-const PAYMENT_STATUSES = [
-  "pending_verification",
-  "verified",
-  "rejected",
-];
 
 const APPLICATION_STATUSES = [
   "new",
@@ -53,7 +45,6 @@ export default function StudentApplications() {
   const [refreshing, setRefreshing] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [paymentFilter, setPaymentFilter] = useState("all");
   const [applicationFilter, setApplicationFilter] = useState("all");
 
   const [selected, setSelected] = useState(null);
@@ -125,8 +116,6 @@ export default function StudentApplications() {
 
       return (
         matchSearch &&
-        (paymentFilter === "all" ||
-          row.payment_status === paymentFilter) &&
         (applicationFilter === "all" ||
           row.application_status === applicationFilter)
       );
@@ -134,21 +123,12 @@ export default function StudentApplications() {
   }, [
     applications,
     search,
-    paymentFilter,
     applicationFilter,
   ]);
 
   const counts = useMemo(
     () => ({
       total: applications.length,
-
-      pending: applications.filter(
-        (row) => row.payment_status === "pending_verification"
-      ).length,
-
-      verified: applications.filter(
-        (row) => row.payment_status === "verified"
-      ).length,
 
       approved: applications.filter(
         (row) => row.application_status === "approved"
@@ -203,21 +183,7 @@ export default function StudentApplications() {
     }
   };
 
-  const verifyPayment = (row) =>
-    updateApplication(
-      row,
-      { payment_status: "verified" },
-      "Payment marked as verified."
-    );
-
   const approveApplication = async (row) => {
-    if (row.payment_status !== "verified") {
-      setError(
-        "Verify the payment first. Application approval is available only after payment verification."
-      );
-      return;
-    }
-
     if (row.application_status === "rejected") {
       setError("Rejected applications cannot be approved.");
       return;
@@ -330,8 +296,7 @@ export default function StudentApplications() {
           <h1>Student Applications</h1>
 
           <p>
-            Review website applications, verify UPI payment
-            references, and approve eligible applicants.
+            Review website applications and approve or reject applicants.
           </p>
         </div>
 
@@ -382,20 +347,6 @@ export default function StudentApplications() {
         />
 
         <Summary
-          icon={<Clock3 size={21} />}
-          label="Payment Pending"
-          value={loading ? "…" : counts.pending}
-          tone="orange"
-        />
-
-        <Summary
-          icon={<IndianRupee size={21} />}
-          label="Payment Verified"
-          value={loading ? "…" : counts.verified}
-          tone="green"
-        />
-
-        <Summary
           icon={<Users size={21} />}
           label="Approved"
           value={loading ? "…" : counts.approved}
@@ -409,8 +360,7 @@ export default function StudentApplications() {
             <h2>Applications</h2>
 
             <p>
-              Confirm transaction references against your UPI
-              payment records.
+              Review submitted details and manage application status.
             </p>
           </div>
 
@@ -426,23 +376,6 @@ export default function StudentApplications() {
                 placeholder="Search applicant, email, transaction…"
               />
             </div>
-
-            <select
-              value={paymentFilter}
-              onChange={(e) =>
-                setPaymentFilter(e.target.value)
-              }
-            >
-              <option value="all">
-                All payment statuses
-              </option>
-
-              {PAYMENT_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {prettyStatus(status)}
-                </option>
-              ))}
-            </select>
 
             <select
               value={applicationFilter}
@@ -566,7 +499,6 @@ export default function StudentApplications() {
 
                     <strong>
                       {search ||
-                      paymentFilter !== "all" ||
                       applicationFilter !== "all"
                         ? "No matching applications"
                         : "No applications yet"}
@@ -749,25 +681,7 @@ export default function StudentApplications() {
             )}
 
             <div className="sa-modal-actions">
-              {selected.payment_status ===
-                "pending_verification" && (
-                <button
-                  className="sa-primary-action"
-                  disabled={busyId === selected.id}
-                  onClick={() =>
-                    verifyPayment(selected)
-                  }
-                >
-                  <CheckCircle2 size={16} />
-
-                  {busyId === selected.id
-                    ? "Saving…"
-                    : "Verify Payment"}
-                </button>
-              )}
-
-              {selected.payment_status === "verified" &&
-                selected.application_status === "new" && (
+              {selected.application_status === "new" && (
                   <button
                     className="sa-primary-action"
                     disabled={busyId === selected.id}

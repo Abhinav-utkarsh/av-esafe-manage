@@ -12,6 +12,7 @@ import {
   Power,
   Phone,
   User,
+  Trash2,
 } from "lucide-react";
 
 import { supabase } from "../../lib/supabaseClient";
@@ -41,6 +42,7 @@ export default function Batches() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingBatchId, setDeletingBatchId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -270,6 +272,68 @@ export default function Batches() {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  // DELETE BATCH
+  const deleteBatch = async (batch) => {
+    if (!batch?.id) return;
+
+    const confirmed = window.confirm(
+      `Permanently delete the batch "${batch.batch_name}" (${batch.batch_code})?\\n\\nThis action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingBatchId(batch.id);
+    setError("");
+    setSuccess("");
+
+    try {
+      // Prevent deletion when enrollment records still reference this batch.
+      // Check both the legacy enrollments relation and enrollment_items.
+      const [
+        { data: legacyEnrollments, error: legacyError },
+        { data: enrollmentItems, error: itemsError },
+      ] = await Promise.all([
+        supabase
+          .from("enrollments")
+          .select("id")
+          .eq("batch_id", batch.id)
+          .limit(1),
+        supabase
+          .from("enrollment_items")
+          .select("id")
+          .eq("batch_id", batch.id)
+          .limit(1),
+      ]);
+
+      if (legacyError) throw legacyError;
+      if (itemsError) throw itemsError;
+
+      if (
+        (legacyEnrollments || []).length > 0 ||
+        (enrollmentItems || []).length > 0
+      ) {
+        throw new Error(
+          "This batch has students enrolled. Remove or reassign the batch from their enrollments before deleting it."
+        );
+      }
+
+      const { error: deleteError } = await supabase
+        .from("batches")
+        .delete()
+        .eq("id", batch.id);
+
+      if (deleteError) throw deleteError;
+
+      setSuccess(`Batch "${batch.batch_name}" deleted successfully.`);
+      await fetchData();
+    } catch (err) {
+      console.error("Batch deletion error:", err);
+      setError(err.message || "Unable to delete batch.");
+    } finally {
+      setDeletingBatchId(null);
     }
   };
 
@@ -552,6 +616,21 @@ export default function Batches() {
                           title="Edit batch"
                         >
                           <Pencil size={16} />
+                        </button>
+
+                        <button
+                          className="batch-edit-button batch-delete-button"
+                          onClick={() => deleteBatch(batch)}
+                          disabled={deletingBatchId === batch.id}
+                          title="Delete batch"
+                          aria-label={`Delete ${batch.batch_name}`}
+                          style={{
+                            color: "#dc2626",
+                            borderColor: "#fecaca",
+                            background: "#fff5f5",
+                          }}
+                        >
+                          <Trash2 size={16} />
                         </button>
 
                         <select

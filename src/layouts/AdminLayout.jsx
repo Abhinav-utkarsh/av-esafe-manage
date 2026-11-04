@@ -302,16 +302,11 @@ export default function AdminLayout() {
           ${mobileOpen ? "mobile-open" : ""}`}
       >
         <div className="sidebar-brand">
-          <div className="sidebar-brand-icon">
-            <GraduationCap size={25} />
-          </div>
-
-          {!collapsed && (
-            <div className="sidebar-brand-text">
-              <strong>Av_eSAFE</strong>
-              <span>ACADEMY</span>
-            </div>
-          )}
+          <img
+            src={collapsed ? "/logo-icon.png" : "/logo.png"}
+            alt="Av_eSAFE Academy"
+            className={`sidebar-brand-image ${collapsed ? "compact-logo" : ""}`}
+          />
 
           <button
             className="mobile-close"
@@ -432,9 +427,8 @@ export default function AdminLayout() {
               ref={notificationRef}
             >
               <button
-                className={`admin-notification-button ${
-                  notificationOpen ? "notification-active" : ""
-                }`}
+                className={`admin-notification-button ${notificationOpen ? "notification-active" : ""
+                  }`}
                 onClick={() => setNotificationOpen(!notificationOpen)}
                 aria-label="Open notifications"
                 title="Student messages"
@@ -499,9 +493,8 @@ export default function AdminLayout() {
                       notifications.map((item) => (
                         <div
                           key={item.id}
-                          className={`notification-item ${
-                            item.status === "new" ? "unread" : ""
-                          }`}
+                          className={`notification-item ${item.status === "new" ? "unread" : ""
+                            }`}
                         >
                           <div className="notification-item-top">
                             <div className="notification-student">

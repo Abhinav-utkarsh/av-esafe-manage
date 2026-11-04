@@ -308,9 +308,66 @@ export default function Payments() {
         throw new Error("Payment was not updated. Please refresh and try again.");
       }
 
+      // When payment is verified from the Payments page, also update the
+      // matching public application using the student's profile email.
+      if (nextStatus === "verified") {
+        const studentEmail = getStudentEmail(payment.enrollment_id)
+          .trim()
+          .toLowerCase();
+
+        if (!studentEmail) {
+          throw new Error(
+            "Payment was verified, but the student's email could not be found to sync the Student Application status."
+          );
+        }
+
+        const { data: applicationData, error: applicationUpdateError } =
+          await supabase
+            .from("student_applications")
+            .update({
+              payment_status: "verified",
+              updated_at: new Date().toISOString(),
+            })
+            .ilike("email", studentEmail)
+            .neq("payment_status", "verified")
+            .select("id");
+
+        if (applicationUpdateError) {
+          throw new Error(
+            `Payment was verified, but Student Application payment status could not be synced: ${applicationUpdateError.message}`
+          );
+        }
+
+        if (!applicationData?.length) {
+          // Check whether an application already has verified status.
+          const { data: existingApplication, error: lookupError } =
+            await supabase
+              .from("student_applications")
+              .select("id, payment_status")
+              .ilike("email", studentEmail)
+              .maybeSingle();
+
+          if (lookupError) throw lookupError;
+
+          if (!existingApplication) {
+            throw new Error(
+              "Payment was verified, but no Student Application was found for this student's email."
+            );
+          }
+
+          if (existingApplication.payment_status !== "verified") {
+            throw new Error(
+              "Payment was verified, but the Student Application status was not updated. Check the UPDATE policy for student_applications."
+            );
+          }
+        }
+      }
+
       setSuccess(
         nextStatus === "pending"
           ? "Payment successfully reverted to Pending."
+          : nextStatus === "verified"
+          ? "Payment verified successfully. Student Application payment status is also updated."
           : `Payment ${nextStatus} successfully.`
       );
 
