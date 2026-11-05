@@ -19,6 +19,8 @@ import Home from "./pages/public/Home";
 import About from "./pages/public/About";
 import Founder from "./pages/public/Founder";
 import OurMentors from "./pages/public/OurMentors";
+import ScrollToTop from "./components/ScrollToTop";
+import Chatbot from "./components/Chatbot";
 
 // ==========================================
 // PUBLIC NAVBAR & FOOTER
@@ -130,6 +132,8 @@ function AppLoadingScreen() {
 // APPLICATION ROUTES
 // ==========================================
 
+
+
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
 
@@ -154,216 +158,207 @@ function AppRoutes() {
   const isStudent = profile?.role === "student";
 
   return (
-    <Routes>
-      {/* PUBLIC HOMEPAGE */}
+    <>
+      {/* GLOBAL SCROLL TO TOP */}
+      <ScrollToTop />
 
-      <Route
-        path="/"
-        element={<Home />}
-      />
+      {/* GLOBAL AV_eSAFE AI CHATBOT */}
+      <Chatbot />
 
-      {/* ABOUT US */}
+      <Routes>
+        {/* PUBLIC HOMEPAGE */}
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-      <Route
-        path="/about"
-        element={<About />}
-      />
+        {/* ABOUT US */}
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
-      {/* FOUNDER */}
+        {/* FOUNDER */}
+        <Route
+          path="/founder"
+          element={<Founder />}
+        />
 
-      <Route
-        path="/founder"
-        element={<Founder />}
-      />
+        {/* OUR MENTORS */}
+        <Route
+          path="/our-mentors"
+          element={<OurMentors />}
+        />
 
-      {/* OUR MENTORS */}
-
-      <Route
-        path="/our-mentors"
-        element={<OurMentors />}
-      />
-
-      {/* LOGIN */}
-
-      <Route
-        path="/login"
-        element={
-          <PublicLayout>
-            {user ? (
-              isAdmin ? (
-                <Navigate
-                  to="/admin/dashboard"
-                  replace
-                />
-              ) : isStudent ? (
-                <Navigate
-                  to="/student/dashboard"
-                  replace
-                />
+        {/* LOGIN */}
+        <Route
+          path="/login"
+          element={
+            <PublicLayout>
+              {user ? (
+                isAdmin ? (
+                  <Navigate
+                    to="/admin/dashboard"
+                    replace
+                  />
+                ) : isStudent ? (
+                  <Navigate
+                    to="/student/dashboard"
+                    replace
+                  />
+                ) : (
+                  <Login />
+                )
               ) : (
                 <Login />
-              )
-            ) : (
-              <Login />
-            )}
-          </PublicLayout>
-        }
-      />
+              )}
+            </PublicLayout>
+          }
+        />
 
-      {/* SET PASSWORD */}
-
-      <Route
-        path="/set-password"
-        element={<SetPassword />}
-      />
-
-      {/* ====================================== */}
-      {/* ADMIN ROUTES */}
-      {/* ====================================== */}
-
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute allowedRole="admin">
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
+        {/* SET PASSWORD */}
         <Route
-          index
+          path="/set-password"
+          element={<SetPassword />}
+        />
+
+        {/* ====================================== */}
+        {/* ADMIN ROUTES */}
+        {/* ====================================== */}
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <Navigate
+                to="/admin/dashboard"
+                replace
+              />
+            }
+          />
+
+          {/* ADMIN DASHBOARD */}
+          <Route
+            path="dashboard"
+            element={<AdminDashboard />}
+          />
+
+          {/* STUDENTS */}
+          <Route
+            path="students"
+            element={<Students />}
+          />
+
+          {/* STUDENT APPLICATIONS */}
+          <Route
+            path="student-applications"
+            element={<StudentApplications />}
+          />
+
+          {/* COURSES */}
+          <Route
+            path="courses"
+            element={<Courses />}
+          />
+
+          {/* BUNDLES */}
+          <Route
+            path="bundles"
+            element={<Bundles />}
+          />
+
+          {/* BATCHES */}
+          <Route
+            path="batches"
+            element={<Batches />}
+          />
+
+          {/* ENROLLMENTS */}
+          <Route
+            path="enrollments"
+            element={<Enrollments />}
+          />
+
+          {/* PAYMENTS */}
+          <Route
+            path="payments"
+            element={<Payments />}
+          />
+
+          {/* PROGRESS */}
+          <Route
+            path="progress"
+            element={<Progress />}
+          />
+
+          {/* ASSESSMENTS */}
+          <Route
+            path="assessments"
+            element={<Assessments />}
+          />
+
+          {/* ANNOUNCEMENTS */}
+          <Route
+            path="announcements"
+            element={<Announcements />}
+          />
+
+          {/* RESOLVED QUERIES */}
+          <Route
+            path="resolved-queries"
+            element={<ResolvedQueries />}
+          />
+
+          {/* ADMIN MANAGEMENT */}
+          <Route
+            path="admin-management"
+            element={
+              <ProtectedRoute allowedRole="super_admin">
+                <AdminManagement />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        {/* ====================================== */}
+        {/* STUDENT ROUTES */}
+        {/* ====================================== */}
+
+        <Route
+          path="/student/dashboard"
+          element={
+            <ProtectedRoute allowedRole="student">
+              <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ====================================== */}
+        {/* FALLBACK ROUTE */}
+        {/* ====================================== */}
+
+        <Route
+          path="*"
           element={
             <Navigate
-              to="/admin/dashboard"
+              to="/"
               replace
             />
           }
         />
-
-        {/* ADMIN DASHBOARD */}
-
-        <Route
-          path="dashboard"
-          element={<AdminDashboard />}
-        />
-
-        {/* STUDENTS */}
-
-        <Route
-          path="students"
-          element={<Students />}
-        />
-
-        {/* NEW: STUDENT APPLICATIONS */}
-
-        <Route
-          path="student-applications"
-          element={<StudentApplications />}
-        />
-
-        {/* COURSES */}
-
-        <Route
-          path="courses"
-          element={<Courses />}
-        />
-
-        {/* BUNDLES */}
-
-        <Route
-          path="bundles"
-          element={<Bundles />}
-        />
-
-        {/* BATCHES */}
-
-        <Route
-          path="batches"
-          element={<Batches />}
-        />
-
-        {/* ENROLLMENTS */}
-
-        <Route
-          path="enrollments"
-          element={<Enrollments />}
-        />
-
-        {/* PAYMENTS */}
-
-        <Route
-          path="payments"
-          element={<Payments />}
-        />
-
-        {/* PROGRESS */}
-
-        <Route
-          path="progress"
-          element={<Progress />}
-        />
-
-        {/* ASSESSMENTS */}
-
-        <Route
-          path="assessments"
-          element={<Assessments />}
-        />
-
-        {/* ANNOUNCEMENTS */}
-
-        <Route
-          path="announcements"
-          element={<Announcements />}
-        />
-
-        {/* RESOLVED QUERIES */}
-
-        <Route
-          path="resolved-queries"
-          element={<ResolvedQueries />}
-        />
-
-        {/* ADMIN MANAGEMENT */}
-
-        <Route
-          path="admin-management"
-          element={
-            <ProtectedRoute allowedRole="super_admin">
-              <AdminManagement />
-            </ProtectedRoute>
-          }
-        />
-      </Route>
-
-      {/* ====================================== */}
-      {/* STUDENT ROUTES */}
-      {/* ====================================== */}
-
-      <Route
-        path="/student/dashboard"
-        element={
-          <ProtectedRoute allowedRole="student">
-            <StudentDashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ====================================== */}
-      {/* FALLBACK ROUTE */}
-      {/* ====================================== */}
-
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to="/"
-            replace
-          />
-        }
-      />
-    </Routes>
+      </Routes>
+    </>
   );
 }
+
+
 
 // ==========================================
 // ROOT APPLICATION

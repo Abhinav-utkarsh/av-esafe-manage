@@ -1,0 +1,134 @@
+
+/* ==========================================
+   AV_eSAFE — PREMIUM ANIMATED SCROLL TO TOP
+========================================== */
+
+.scroll-to-top {
+  position: fixed;
+
+  left: 50%;
+  bottom: 25px;
+
+  transform: translateX(-50%);
+
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  /* Transparent Background */
+  background: transparent;
+
+  /* Website Blue Shade */
+  color: #2563eb;
+
+  border: none;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  cursor: pointer;
+  z-index: 9997;
+
+  /* Floating Animation */
+  animation: scrollArrowFloat 2s ease-in-out infinite;
+
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Arrow Icon */
+.scroll-to-top svg {
+  width: 32px;
+  height: 32px;
+
+  stroke-width: 2.4;
+
+  transition:
+    transform 0.3s ease,
+    stroke-width 0.3s ease;
+}
+
+/* Hover */
+.scroll-to-top:hover {
+  background: transparent;
+
+  color: #1d4ed8;
+
+  box-shadow: none;
+
+  transform: translateX(-50%) translateY(-5px) scale(1.12);
+
+  animation-play-state: paused;
+}
+
+.scroll-to-top:hover svg {
+  transform: translateY(-3px);
+
+  stroke-width: 2.8;
+}
+
+/* Click */
+.scroll-to-top:active {
+  transform: translateX(-50%) scale(0.92);
+}
+
+/* Focus Accessibility */
+.scroll-to-top:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 5px;
+}
+
+/* Floating / Size Animation */
+@keyframes scrollArrowFloat {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-5px) scale(1.08);
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .scroll-to-top {
+    left: 50%;
+    bottom: 20px;
+
+    width: 44px;
+    height: 44px;
+
+    transform: translateX(-50%);
+  }
+
+  .scroll-to-top svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .scroll-to-top:hover {
+    transform: translateX(-50%) translateY(-5px) scale(1.12);
+  }
+}
+
+/* Accessibility: Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-to-top {
+    animation: none;
+    transition: none;
+  }
+
+  .scroll-to-top svg {
+    transition: none;
+  }
+}
